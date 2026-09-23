@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Scanner Mobile — D Coração Home</title>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<!-- Biblioteca ZXing -->
+<script src="https://unpkg.com/@zxing/library@0.21.0/umd/index.min.js"></script>
+<script>
+  tailwind.config = { theme: { extend: { colors: { base: '#13100e', surface: '#1c1611', surface2: '#241c16', line: '#3a2c21', caramel: '#B08662', caramelLite: '#D8B48F', cream: '#F3EAE0', muted: '#9C8A78', success: '#6FBF7F', danger: '#D9584B', warning: '#E5A93C', blueprint: '#4F7A96' }, fontFamily: { display: ['"Bebas Neue"', 'sans-serif'], mono: ['"JetBrains Mono"', 'monospace'] } } } }
+</script>
+<style>
+  html, body { height: 100%; overscroll-behavior: none; background-color: #13100e; color: #F3EAE0; }
+  .video-wrapper { position: relative; width: 100%; min-height: 260px; background: #1c1611; border: 2px solid #3a2c21; border-radius: 16px; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+  video { width: 100%; height: 100%; max-height: 320px; object-fit: cover; border-radius: 14px; }
+
+  .scan-guide { position: absolute; inset: 20px; border: 2px dashed rgba(216, 180, 143, 0.5); border-radius: 12px; pointer-events: none; }
+
+  #feedbackOverlay { position: fixed; inset: 0; z-index: 50; display: flex; align-items: center; justify-content: center; pointer-events: none; opacity: 0; transition: opacity 90ms ease-out; }
+  #feedbackOverlay.show { opacity: 1; }
+  #feedbackOverlay.stageTwo { animation: flashGreen 800ms ease-out; }
+  #feedbackOverlay.warning { animation: flashYellow 800ms ease-out; }
+  #feedbackOverlay.error { animation: flashRed 800ms ease-out; }
+  @keyframes flashGreen { 0% {background: rgba(111,191,127,0.92);} 100% {background: transparent;} }
+  @keyframes flashYellow { 0%, 50% {background: rgba(229,169,60,0.92);} 100% {background: transparent;} }
+  @keyframes flashRed { 0%, 50% {background: rgba(217,88,75,0.90);} 100% {background: transparent;} }
+
+  select.auth-select { background: transparent; border: none; color: #F3EAE0; font-family: 'JetBrains Mono', monospace; font-size: 11px; outline: none; cursor: pointer; }
+  input.pin-field { width: 45px; background: #1c1611; border: 1px solid #3a2c21; color: #F3EAE0; text-align: center; border-radius: 4px; padding: 2px; font-family: 'JetBrains Mono', monospace; font-size: 12px; outline: none; }
+  input.pin-field:focus { border-color: #B08662; }
+</style>
+</head>
+<body class="flex flex-col min-h-screen">
+
+  <div id="feedbackOverlay">
+    <div class="text-center px-6">
+      <div id="fbEyebrow" class="font-mono text-xs uppercase tracking-widest text-cream/90 mb-1"></div>
+      <div id="fbMain" class="font-display text-5xl leading-none text-cream drop-shadow-md"></div>
+      <div id="fbSub" class="font-mono text-sm text-cream/90 mt-2"></div>
+    </div>
+  </div>
+
+  <header class="border-b border-line px-4 py-3 bg-surface flex items-center justify-between shrink-0 shadow-md">
+    <div class="flex items-center gap-2">
+      <div class="w-8 h-8 rounded-lg bg-caramel/20 border border-caramel/40 flex items-center justify-center text-caramel font-bold text-sm">DC</div>
+      <div>
+        <h1 class="font-display text-lg tracking-wide text-cream leading-none">EXPEDIÇÃO</h1>
+        <p class="text-[9px] font-mono text-muted uppercase">BIPE 2 — GAIOLA</p>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-2">
+      <div class="flex items-center gap-2 bg-surface2 px-2 py-1 rounded-xl border border-line shadow-inner">
+        <select id="selectUsuario" onchange="alterarUsuarioSelecionado()" class="auth-select"><option value="">A carregar...</option></select>
+        <span class="text-[#3a2c21]">|</span>
+        <input type="password" id="inputPin" maxlength="4" inputmode="numeric" pattern="[0-9]*" placeholder="PIN" class="pin-field" onchange="salvarPinLocal()" oninput="this.value=this.value.replace(/[^0-9]/g,'')" />
+      </div>
+      <button onclick="sincronizarTudo()" class="p-2 rounded-lg bg-surface2 border border-line text-caramel text-xs font-mono font-bold">↻</button>
+    </div>
+  </header>
+
+  <main class="flex-1 p-4 flex flex-col gap-4 overflow-y-auto max-w-md mx-auto w-full">
+    <div id="syncErrorBanner" class="hidden bg-danger/10 border border-danger/40 rounded-lg px-3 py-2 text-[10px] font-mono text-danger text-center">⚠️ Falha ao sincronizar com o servidor — verifique a conexão</div>
+    <div id="filaBadge" style="display:none" class="bg-warning/10 border border-warning/40 rounded-lg px-3 py-2 text-[10px] font-mono text-warning justify-between">
+      <span>📴 <span id="filaCount">0</span> leitura(s) aguardando conexão</span>
+      <span class="text-muted">reenviando sozinho...</span>
+    </div>
+
+    <div class="grid grid-cols-2 gap-3">
+      <div class="bg-surface border border-warning/30 rounded-xl p-3 flex items-center justify-between shadow-lg">
+        <div><span class="text-[9px] font-mono text-warning uppercase font-bold block mb-1">Pendentes</span><span id="txtPendentes" class="font-display text-3xl text-warning leading-none">0</span></div>
+        <span class="text-2xl opacity-80">📦</span>
+      </div>
+      <div class="bg-surface border border-success/30 rounded-xl p-3 flex items-center justify-between shadow-lg">
+        <div><span class="text-[9px] font-mono text-success uppercase font-bold block mb-1">Bipados Hoje</span><span id="txtBipados" class="font-display text-3xl text-success leading-none">0</span></div>
+        <span class="text-2xl opacity-80">✅</span>
+      </div>
+    </div>
+
+    <div class="flex flex-col gap-2 mt-2">
+      <div class="flex justify-between items-center px-1">
+        <span class="text-[10px] font-mono text-muted uppercase tracking-widest font-bold">Leitor Contínuo (Câmera)</span>
+        <div class="flex items-center gap-3">
+          <button id="btnTorch" onclick="alternarTorch()" class="hidden text-xs px-2 py-1 rounded-md bg-surface2 border border-line">🔦</button>
+          <button onclick="iniciarCamara()" class="text-[10px] font-mono text-blueprint underline hover:text-white transition">↻ Ligar Câmera</button>
+        </div>
+      </div>
+      <div class="video-wrapper shadow-2xl" onclick="forcarFoco()">
+        <video id="videoElement" playsinline autoplay muted></video>
+        <div class="scan-guide"></div>
+      </div>
+      <div id="zoomWrap" style="display:none" class="gap-2 items-center px-1">
+        <span class="text-[9px] font-mono text-muted">🔍−</span>
+        <input type="range" id="zoomSlider" oninput="ajustarZoom(this.value)" class="w-full accent-caramel" />
+        <span class="text-[9px] font-mono text-muted">+</span>
+      </div>
+      <p id="cameraStatus" class="text-[10px] font-mono text-center text-muted">Aguardando câmera...</p>
+      <button onclick="alternarEntradaManual()" class="text-[10px] font-mono text-blueprint underline hover:text-white transition self-center">⌨ Digitar código manualmente</button>
+      <div id="entradaManualWrap" style="display:none" class="gap-2 items-center">
+        <input type="text" id="inputManual" placeholder="Digite o código da etiqueta" onkeydown="if(event.key==='Enter'){confirmarEntradaManual();}" class="flex-1 bg-surface2 border border-line rounded-lg px-3 py-2 text-sm font-mono text-cream outline-none focus:border-caramel" />
+        <button onclick="confirmarEntradaManual()" class="px-3 py-2 rounded-lg bg-caramel/30 border border-caramel/50 text-caramel text-xs font-mono font-bold">OK</button>
+      </div>
+    </div>
+
+    <div class="bg-surface border border-line rounded-xl p-3 flex flex-col gap-1 shadow-md">
+      <span class="text-[9px] font-mono text-muted uppercase tracking-widest font-bold">Última Separação</span>
+      <div id="lastScanBox" class="text-sm font-mono text-caramelLite font-bold truncate">Nenhum pacote bipado.</div>
+      <div id="lastScanSub" class="text-[10px] font-mono text-muted">Insira o PIN e aponte para a etiqueta.</div>
+    </div>
+  </main>
+
+  <script>
+    const API_URL = "https://script.google.com/macros/s/AKfycbzbldDAKkXIA39dyLLbljKI4imrVm0B2hwJzgDnb8aIP38ZL5-nUr4-LEGFKo_VXLx7Mg/exec";
+
+    let codeReader = null; let lastScanCode = ""; let lastScanTime = 0; let listaUsuariosDB = []; let usuarioAtual = { email: "", setor: "" };
+    let audioCtx = null;
+    let currentTrack = null; let torchLigado = false;
+    let wakeLock = null; let enviandoFila = false;
+    const FILA_KEY = 'dc_fila_offline';
+
+    // watchdog: religa a câmera sozinho se o loop de leitura parar de responder
+    let ultimoTickScanner = Date.now();
+
+    function desbloquearAudio() {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+    }
+    document.addEventListener('touchstart', desbloquearAudio, { once: true });
+    document.addEventListener('click', desbloquearAudio, { once: true });
+
+    function emitirSom(tipo) {
+      desbloquearAudio();
+      if (!audioCtx) return;
+      const now = audioCtx.currentTime;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+
+      if (tipo === 'sucesso') {
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(880, now);
+        osc.frequency.setValueAtTime(1200, now + 0.08);
+        gain.gain.setValueAtTime(0.3, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+        osc.start(now);
+        osc.stop(now + 0.25);
+      } else if (tipo === 'aviso') {
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(480, now);
+        gain.gain.setValueAtTime(0.4, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+        osc.start(now);
+        osc.stop(now + 0.2);
+      } else if (tipo === 'erro') {
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(150, now);
+        gain.gain.setValueAtTime(0.5, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+        osc.start(now);
+        osc.stop(now + 0.4);
+      }
+    }
+
+    window.onload = () => {
+      sincronizarTudo(); iniciarCamara(); ativarWakeLock();
+      document.getElementById('inputPin').value = localStorage.getItem('dc_user_pin') || '';
+      atualizarBadgeFila(); processarFila();
+      setInterval(verificarSaudeScanner, 4000);
+    };
+
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) {
+        const video = document.getElementById('videoElement');
+        const stream = video ? video.srcObject : null;
+        if (!stream || !stream.active) iniciarCamara();
+        if (wakeLock === null) ativarWakeLock();
+        processarFila();
+        ultimoTickScanner = Date.now();
+      }
+    });
+
+    window.addEventListener('online', processarFila);
+    setInterval(processarFila, 10000);
+
+    async function ativarWakeLock() {
+      try {
+        if ('wakeLock' in navigator) {
+          wakeLock = await navigator.wakeLock.request('screen');
+          wakeLock.addEventListener('release', () => { wakeLock = null; });
+        }
+      } catch (e) { console.warn('Wake Lock não suportado:', e); }
+    }
+
+    function obterFila() {
+      try { return JSON.parse(localStorage.getItem(FILA_KEY)) || []; } catch (e) { return []; }
+    }
+    function salvarFila(fila) { localStorage.setItem(FILA_KEY, JSON.stringify(fila)); atualizarBadgeFila(); }
+    function adicionarNaFila(item) { const fila = obterFila(); fila.push(item); salvarFila(fila); }
+    function atualizarBadgeFila() {
+      const fila = obterFila();
+      const badge = document.getElementById('filaBadge');
+      if (fila.length > 0) {
+        badge.style.display = 'flex';
+        document.getElementById('filaCount').textContent = fila.length;
+      } else {
+        badge.style.display = 'none';
+      }
+    }
+
+    function enviarBipe(item) {
+      return fetch(API_URL, { method: 'POST', body: JSON.stringify({ codigo: item.codigo, email: item.email, setor: item.setor, pin: item.pin }), redirect: 'follow' })
+        .then(res => res.json());
+    }
+
+    function processarFila() {
+      const fila = obterFila();
+      if (fila.length === 0 || enviandoFila || !navigator.onLine) return;
+      enviandoFila = true;
+      const item = fila[0];
+
+      enviarBipe(item)
+        .then(data => {
+          const atual = obterFila(); atual.shift(); salvarFila(atual);
+          carregarDados();
+          enviandoFila = false;
+          if (atual.length > 0) processarFila();
+        })
+        .catch(() => { enviandoFila = false; });
+    }
+
+    function alternarEntradaManual() {
+      const wrap = document.getElementById('entradaManualWrap');
+      const mostrar = wrap.style.display === 'none' || wrap.style.display === '';
+      wrap.style.display = mostrar ? 'flex' : 'none';
+      if (mostrar) document.getElementById('inputManual').focus();
+    }
+    function confirmarEntradaManual() {
+      const campo = document.getElementById('inputManual');
+      const valor = campo.value.trim();
+      if (!valor) return;
+      const pinPreenchido = !!document.getElementById('inputPin').value;
+      onBarcodeDetected(valor);
+      if (pinPreenchido) campo.value = '';
+    }
+
+    function salvarPinLocal() { localStorage.setItem('dc_user_pin', document.getElementById('inputPin').value); }
+    function sincronizarTudo() { carregarUsuarios(); carregarDados(); }
+
+    function carregarUsuarios() {
+      fetch(`${API_URL}?action=getUsuarios`, { redirect: 'follow' })
+        .then(res => res.json())
+        .then(usuarios => {
+          listaUsuariosDB = usuarios; const select = document.getElementById('selectUsuario'); select.innerHTML = '';
+          if (usuarios && usuarios.length > 0) {
+            usuarios.forEach(u => { const opt = document.createElement('option'); opt.value = u.email; opt.textContent = u.email.split('@')[0]; select.appendChild(opt); });
+            const savedEmail = localStorage.getItem('dc_user_email');
+            if (savedEmail && usuarios.some(u => u.email === savedEmail)) select.value = savedEmail;
+            alterarUsuarioSelecionado();
+          }
+          ocultarErroSync();
+        }).catch(err => { console.error(err); mostrarErroSync(); });
+    }
+
+    function alterarUsuarioSelecionado() {
+      const select = document.getElementById('selectUsuario'); localStorage.setItem('dc_user_email', select.value);
+      const uFound = listaUsuariosDB.find(u => u.email === select.value);
+      usuarioAtual = uFound ? uFound : { email: select.value, setor: "Expedição 1" };
+    }
+
+    function carregarDados() {
+      fetch(`${API_URL}?action=getDados`, { redirect: 'follow' })
+        .then(res => res.json())
+        .then(data => { document.getElementById('txtBipados').textContent = data.bipados || 0; document.getElementById('txtPendentes').textContent = data.pendentes || 0; ocultarErroSync(); })
+        .catch(err => { console.error(err); mostrarErroSync(); });
+    }
+    function mostrarErroSync() { const el = document.getElementById('syncErrorBanner'); if (el) el.classList.remove('hidden'); }
+    function ocultarErroSync() { const el = document.getElementById('syncErrorBanner'); if (el) el.classList.add('hidden'); }
+
+    function extrairCodigoLogistico(raw) {
+      if (!raw) return "";
+      let str = String(raw).trim();
+
+      let matchShopee = str.match(/BR[A-Z0-9]{8,20}/i);
+      if (matchShopee) return matchShopee[0].toUpperCase();
+
+      let matchAmz = str.match(/(AMZC?|TBA|AZ)[A-Z0-9]{8,20}/i);
+      if (matchAmz) return matchAmz[0].toUpperCase();
+
+      let matchMeli = str.match(/(MEL|MLB)[A-Z0-9]{8,20}/i);
+      if (matchMeli) return matchMeli[0].toUpperCase();
+
+      let apenasNumeros = str.replace(/\D/g, "");
+      if (apenasNumeros.length === 44) {
+        let nfeNum = parseInt(apenasNumeros.substring(25, 34), 10);
+        if (nfeNum > 0) return String(nfeNum);
+      }
+
+      return str.replace(/[^a-zA-Z0-9]/g, "").toUpperCase().trim();
+    }
+
+    function verificarSaudeScanner() {
+      if (document.hidden) return;
+      if (Date.now() - ultimoTickScanner > 6000) {
+        console.warn('Scanner sem responder — religando câmera automaticamente.');
+        iniciarCamara();
+      }
+    }
+
+    // ============================================================
+    // CÂMERA — lógica idêntica à versão que funcionava: sem hints,
+    // sem restrição de formatos, sem TRY_HARDER e sem forçar
+    // resolução/foco na abertura da câmera. É exatamente isso que
+    // fazia a leitura funcionar antes; qualquer constraint extra
+    // aqui tende a atrapalhar o getUserMedia em vez de ajudar.
+    // ============================================================
+    function iniciarCamara() {
+      const statusEl = document.getElementById('cameraStatus');
+      if (!codeReader) codeReader = new ZXing.BrowserMultiFormatReader();
+      else { try { codeReader.reset(); } catch (e) {} }
+
+      codeReader.listVideoInputDevices().then(videoDevices => {
+        let selectedDeviceId = null;
+        if (videoDevices.length > 0) {
+          let backCam = videoDevices.find(d => d.label.toLowerCase().includes('back') || d.label.toLowerCase().includes('environment'));
+          selectedDeviceId = backCam ? backCam.deviceId : videoDevices[videoDevices.length - 1].deviceId;
+        }
+        // Se não achou um deviceId confiável (labels vazios antes da permissão
+        // ser concedida pela 1ª vez), deixa null: o ZXing cai automaticamente
+        // em { facingMode: 'environment' }, que é robusto e não falha.
+        codeReader.decodeFromVideoDevice(selectedDeviceId, 'videoElement', (result, err) => {
+          ultimoTickScanner = Date.now();
+          if (result && result.getText()) onBarcodeDetected(result.getText());
+        });
+        statusEl.textContent = "Câmera ativada! Pode bipar.";
+        ultimoTickScanner = Date.now();
+        setTimeout(configurarControlesAvancados, 500);
+      }).catch(err => { statusEl.textContent = "Erro de permissão da câmera."; });
+    }
+
+    // Torch/zoom são aplicados DEPOIS que a câmera já está rodando,
+    // então não interferem em nada na hora de abrir a câmera.
+    function configurarControlesAvancados() {
+      try {
+        const video = document.getElementById('videoElement');
+        const stream = video ? video.srcObject : null;
+        if (!stream) return;
+        currentTrack = stream.getVideoTracks()[0];
+        if (!currentTrack) return;
+
+        const caps = currentTrack.getCapabilities ? currentTrack.getCapabilities() : {};
+
+        const btnTorch = document.getElementById('btnTorch');
+        torchLigado = false;
+        btnTorch.classList.remove('bg-caramel/40');
+        if (caps.torch) { btnTorch.classList.remove('hidden'); } else { btnTorch.classList.add('hidden'); }
+
+        const zoomWrap = document.getElementById('zoomWrap');
+        const zoomSlider = document.getElementById('zoomSlider');
+        if (caps.zoom && caps.zoom.max > caps.zoom.min) {
+          zoomWrap.style.display = 'flex';
+          zoomSlider.min = caps.zoom.min; zoomSlider.max = caps.zoom.max; zoomSlider.step = caps.zoom.step || 0.1;
+          zoomSlider.value = (currentTrack.getSettings().zoom) || caps.zoom.min;
+        } else {
+          zoomWrap.style.display = 'none';
+        }
+
+        currentTrack.onended = () => {
+          const statusEl = document.getElementById('cameraStatus');
+          if (statusEl) statusEl.textContent = "Câmera perdida. Reconectando...";
+          setTimeout(iniciarCamara, 600);
+        };
+      } catch (e) { console.warn('Controles não suportados neste aparelho:', e); }
+    }
+
+    function alternarTorch() {
+      if (!currentTrack) return;
+      torchLigado = !torchLigado;
+      currentTrack.applyConstraints({ advanced: [{ torch: torchLigado }] }).catch(() => {});
+      document.getElementById('btnTorch').classList.toggle('bg-caramel/40', torchLigado);
+    }
+
+    function ajustarZoom(valor) {
+      if (!currentTrack) return;
+      currentTrack.applyConstraints({ advanced: [{ zoom: Number(valor) }] }).catch(() => {});
+    }
+
+    function forcarFoco() {
+      if (!currentTrack) return;
+      currentTrack.applyConstraints({ advanced: [{ focusMode: 'single-shot' }] })
+        .then(() => setTimeout(() => { if (currentTrack) currentTrack.applyConstraints({ advanced: [{ focusMode: 'continuous' }] }).catch(() => {}); }, 600))
+        .catch(() => {});
+    }
+
+    function onBarcodeDetected(rawCode) {
+      const code = extrairCodigoLogistico(rawCode);
+      const pin = document.getElementById('inputPin').value;
+
+      if (!pin) {
+        emitirSom('erro');
+        if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+        flashVisual('error', 'PIN REQUERIDO', 'DIGITE A SUA SENHA NO TOPO');
+        document.getElementById('lastScanSub').textContent = "⚠️ Digite o seu PIN de 4 dígitos!";
+        return;
+      }
+
+      const agora = Date.now();
+      if (!code || (code === lastScanCode && (agora - lastScanTime) < 2500)) return;
+      lastScanCode = code; lastScanTime = agora;
+
+      document.getElementById('lastScanBox').textContent = code;
+      document.getElementById('lastScanSub').textContent = "A validar e registrar separação...";
+
+      fetch(API_URL, { method: 'POST', body: JSON.stringify({ codigo: code, email: usuarioAtual.email, setor: usuarioAtual.setor, pin: pin }), redirect: 'follow' })
+      .then(res => res.json())
+      .then(data => {
+        const msgTexto = (data.msg || "").toLowerCase();
+
+        if (data.status === "duplicado" || data.status === "ja_separado" || msgTexto.includes("já foi") || msgTexto.includes("ja foi")) {
+          emitirSom('aviso');
+          if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
+
+          let subTitulo = "ESTE PACOTE JÁ FOI BIPADO";
+          if (msgTexto.includes("impress")) subTitulo = "JÁ IMPRESSO PELO ESCRITÓRIO";
+          else if (msgTexto.includes("separad")) subTitulo = "JÁ SEPARADO NA GAIOLA";
+
+          flashVisual('warning', 'JÁ BIPADO', subTitulo);
+          document.getElementById('lastScanSub').textContent = "⚠️ " + (data.msg || "Pacote já bipado anteriormente.");
+        }
+        else if ((data.status || "").includes("erro")) {
+          emitirSom('erro');
+          if (navigator.vibrate) navigator.vibrate([300, 100, 300]);
+
+          let tituloErro = "ATENÇÃO";
+          if (msgTexto.includes("pin")) tituloErro = "PIN INCORRETO";
+          else if (msgTexto.includes("não imprimiu") || msgTexto.includes("bipe 1")) tituloErro = "FALTA BIPE 1";
+
+          flashVisual('error', tituloErro, data.msg || 'Ação necessária');
+          document.getElementById('lastScanSub').textContent = "🚨 " + (data.msg || "Verifique o pacote.");
+        }
+        else {
+          emitirSom('sucesso');
+          if (navigator.vibrate) navigator.vibrate([100]);
+
+          flashVisual('stageTwo', 'SEPARADO', 'GAIOLA CONFIRMADA');
+          document.getElementById('lastScanSub').textContent = `${data.marketplace || ''} · ${data.produto || ''}`;
+          carregarDados();
+        }
+      })
+      .catch(err => {
+        adicionarNaFila({ codigo: code, email: usuarioAtual.email, setor: usuarioAtual.setor, pin: pin, ts: Date.now() });
+        emitirSom('aviso');
+        if (navigator.vibrate) navigator.vibrate([150, 80, 150]);
+        flashVisual('warning', 'SEM CONEXÃO', 'SALVO — SERÁ ENVIADO SOZINHO');
+        document.getElementById('lastScanSub').textContent = "📴 Sem internet agora. Leitura guardada, será reenviada automaticamente.";
+      });
+    }
+
+    function flashVisual(tipo, titulo, sub) {
+      const o = document.getElementById('feedbackOverlay'); o.className = tipo + ' show';
+      document.getElementById('fbEyebrow').textContent = sub; document.getElementById('fbMain').textContent = titulo;
+      setTimeout(() => { o.className = ''; }, 800);
+    }
+  </script>
+</body>
+</html>
