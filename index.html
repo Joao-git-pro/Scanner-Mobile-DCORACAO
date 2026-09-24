@@ -3,34 +3,47 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#13100e">
 <title>Scanner Mobile — D Coração Home</title>
-<!-- Tailwind CSS -->
-<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://script.google.com">
+<link rel="preconnect" href="https://script.googleusercontent.com">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
-<!-- Biblioteca ZXing -->
-<script src="https://unpkg.com/@zxing/library@0.21.0/umd/index.min.js"></script>
-<script>
-  tailwind.config = { theme: { extend: { colors: { base: '#13100e', surface: '#1c1611', surface2: '#241c16', line: '#3a2c21', caramel: '#B08662', caramelLite: '#D8B48F', cream: '#F3EAE0', muted: '#9C8A78', success: '#6FBF7F', danger: '#D9584B', warning: '#E5A93C', blueprint: '#4F7A96' }, fontFamily: { display: ['"Bebas Neue"', 'sans-serif'], mono: ['"JetBrains Mono"', 'monospace'] } } } }
-</script>
+<!-- CSS já compilado (antes era o Tailwind do CDN, que recompilava a página no celular a cada mudança) -->
+<style>*,:after,:before{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgba(59,130,246,.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgba(59,130,246,.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/*! tailwindcss v3.4.19 | MIT License | https://tailwindcss.com*/*,:after,:before{box-sizing:border-box;border:0 solid #e5e7eb}:after,:before{--tw-content:""}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;-o-tab-size:4;tab-size:4;font-family:ui-sans-serif,system-ui,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:JetBrains Mono,monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0}fieldset,legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::-moz-placeholder,textarea::-moz-placeholder{opacity:1;color:#9ca3af}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.fixed{position:fixed}.absolute{position:absolute}.relative{position:relative}.mx-auto{margin-left:auto;margin-right:auto}.mb-1{margin-bottom:.25rem}.mt-2{margin-top:.5rem}.block{display:block}.flex{display:flex}.grid{display:grid}.hidden{display:none}.h-8{height:2rem}.min-h-screen{min-height:100vh}.w-8{width:2rem}.w-full{width:100%}.max-w-md{max-width:28rem}.flex-1{flex:1 1 0%}.shrink-0{flex-shrink:0}.transform{transform:translate(var(--tw-translate-x),var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.grid-cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}.flex-col{flex-direction:column}.items-center{align-items:center}.justify-center{justify-content:center}.justify-between{justify-content:space-between}.gap-1{gap:.25rem}.gap-2{gap:.5rem}.gap-3{gap:.75rem}.gap-4{gap:1rem}.self-center{align-self:center}.overflow-hidden{overflow:hidden}.overflow-y-auto{overflow-y:auto}.truncate{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.rounded-lg{border-radius:.5rem}.rounded-md{border-radius:.375rem}.rounded-xl{border-radius:.75rem}.border{border-width:1px}.border-b{border-bottom-width:1px}.border-caramel\/40{border-color:rgba(176,134,98,.4)}.border-caramel\/50{border-color:rgba(176,134,98,.5)}.border-danger\/40{border-color:rgba(217,88,75,.4)}.border-line{--tw-border-opacity:1;border-color:rgb(58 44 33/var(--tw-border-opacity,1))}.border-success\/30{border-color:rgba(111,191,127,.3)}.border-warning\/30{border-color:rgba(229,169,60,.3)}.border-warning\/40{border-color:rgba(229,169,60,.4)}.bg-caramel\/20{background-color:rgba(176,134,98,.2)}.bg-caramel\/30{background-color:rgba(176,134,98,.3)}.bg-caramel\/40{background-color:rgba(176,134,98,.4)}.bg-danger\/10{background-color:rgba(217,88,75,.1)}.bg-surface{--tw-bg-opacity:1;background-color:rgb(28 22 17/var(--tw-bg-opacity,1))}.bg-surface2{--tw-bg-opacity:1;background-color:rgb(36 28 22/var(--tw-bg-opacity,1))}.bg-warning\/10{background-color:rgba(229,169,60,.1)}.p-2{padding:.5rem}.p-3{padding:.75rem}.p-4{padding:1rem}.px-1{padding-left:.25rem;padding-right:.25rem}.px-2{padding-left:.5rem;padding-right:.5rem}.px-3{padding-left:.75rem;padding-right:.75rem}.px-4{padding-left:1rem;padding-right:1rem}.px-6{padding-left:1.5rem;padding-right:1.5rem}.py-1{padding-top:.25rem;padding-bottom:.25rem}.py-2{padding-top:.5rem;padding-bottom:.5rem}.py-3{padding-top:.75rem;padding-bottom:.75rem}.pb-2{padding-bottom:.5rem}.pt-3{padding-top:.75rem}.text-center{text-align:center}.font-display{font-family:Bebas Neue,sans-serif}.font-mono{font-family:JetBrains Mono,monospace}.text-2xl{font-size:1.5rem;line-height:2rem}.text-3xl{font-size:1.875rem;line-height:2.25rem}.text-5xl{font-size:3rem;line-height:1}.text-\[10px\]{font-size:10px}.text-\[9px\]{font-size:9px}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:.875rem;line-height:1.25rem}.text-xs{font-size:.75rem;line-height:1rem}.font-bold{font-weight:700}.uppercase{text-transform:uppercase}.leading-none{line-height:1}.tracking-wide{letter-spacing:.025em}.tracking-widest{letter-spacing:.1em}.text-blueprint{--tw-text-opacity:1;color:rgb(79 122 150/var(--tw-text-opacity,1))}.text-caramel{--tw-text-opacity:1;color:rgb(176 134 98/var(--tw-text-opacity,1))}.text-caramelLite{--tw-text-opacity:1;color:rgb(216 180 143/var(--tw-text-opacity,1))}.text-cream{--tw-text-opacity:1;color:rgb(243 234 224/var(--tw-text-opacity,1))}.text-cream\/90{color:hsla(32,44%,92%,.9)}.text-danger{--tw-text-opacity:1;color:rgb(217 88 75/var(--tw-text-opacity,1))}.text-line{--tw-text-opacity:1;color:rgb(58 44 33/var(--tw-text-opacity,1))}.text-muted{--tw-text-opacity:1;color:rgb(156 138 120/var(--tw-text-opacity,1))}.text-success{--tw-text-opacity:1;color:rgb(111 191 127/var(--tw-text-opacity,1))}.text-warning{--tw-text-opacity:1;color:rgb(229 169 60/var(--tw-text-opacity,1))}.underline{text-decoration-line:underline}.accent-caramel{accent-color:#b08662}.opacity-80{opacity:.8}.shadow-2xl{--tw-shadow:0 25px 50px -12px rgba(0,0,0,.25);--tw-shadow-colored:0 25px 50px -12px var(--tw-shadow-color)}.shadow-2xl,.shadow-inner{box-shadow:var(--tw-ring-offset-shadow,0 0 #0000),var(--tw-ring-shadow,0 0 #0000),var(--tw-shadow)}.shadow-inner{--tw-shadow:inset 0 2px 4px 0 rgba(0,0,0,.05);--tw-shadow-colored:inset 0 2px 4px 0 var(--tw-shadow-color)}.shadow-lg{--tw-shadow:0 10px 15px -3px rgba(0,0,0,.1),0 4px 6px -4px rgba(0,0,0,.1);--tw-shadow-colored:0 10px 15px -3px var(--tw-shadow-color),0 4px 6px -4px var(--tw-shadow-color)}.shadow-lg,.shadow-md{box-shadow:var(--tw-ring-offset-shadow,0 0 #0000),var(--tw-ring-shadow,0 0 #0000),var(--tw-shadow)}.shadow-md{--tw-shadow:0 4px 6px -1px rgba(0,0,0,.1),0 2px 4px -2px rgba(0,0,0,.1);--tw-shadow-colored:0 4px 6px -1px var(--tw-shadow-color),0 2px 4px -2px var(--tw-shadow-color)}.outline-none{outline:2px solid transparent;outline-offset:2px}.outline{outline-style:solid}.drop-shadow-md{--tw-drop-shadow:drop-shadow(0 4px 3px rgba(0,0,0,.07)) drop-shadow(0 2px 2px rgba(0,0,0,.06))}.drop-shadow-md,.filter{filter:var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow)}.transition{transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,-webkit-backdrop-filter;transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,backdrop-filter;transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,backdrop-filter,-webkit-backdrop-filter;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}.focus\:border-caramel:focus{--tw-border-opacity:1;border-color:rgb(176 134 98/var(--tw-border-opacity,1))}</style>
 <style>
   html, body { height: 100%; overscroll-behavior: none; background-color: #13100e; color: #F3EAE0; }
   .video-wrapper { position: relative; width: 100%; min-height: 260px; background: #1c1611; border: 2px solid #3a2c21; border-radius: 16px; overflow: hidden; display: flex; align-items: center; justify-content: center; }
   video { width: 100%; height: 100%; max-height: 320px; object-fit: cover; border-radius: 14px; }
-
-  .scan-guide { position: absolute; inset: 20px; border: 2px dashed rgba(216, 180, 143, 0.5); border-radius: 12px; pointer-events: none; }
+  .scan-guide { position: absolute; inset: 20px 5%; border: 2px dashed rgba(216, 180, 143, 0.5); border-radius: 12px; pointer-events: none; transition: border-color .12s; }
+  .scan-guide.lido { border-color: rgba(111,191,127,0.95); border-style: solid; }
 
   #feedbackOverlay { position: fixed; inset: 0; z-index: 50; display: flex; align-items: center; justify-content: center; pointer-events: none; opacity: 0; transition: opacity 90ms ease-out; }
   #feedbackOverlay.show { opacity: 1; }
-  #feedbackOverlay.stageTwo { animation: flashGreen 800ms ease-out; }
+  #feedbackOverlay.stageTwo { animation: flashGreen 700ms ease-out; }
   #feedbackOverlay.warning { animation: flashYellow 800ms ease-out; }
-  #feedbackOverlay.error { animation: flashRed 800ms ease-out; }
+  #feedbackOverlay.error { animation: flashRed 1100ms ease-out; }
   @keyframes flashGreen { 0% {background: rgba(111,191,127,0.92);} 100% {background: transparent;} }
   @keyframes flashYellow { 0%, 50% {background: rgba(229,169,60,0.92);} 100% {background: transparent;} }
-  @keyframes flashRed { 0%, 50% {background: rgba(217,88,75,0.90);} 100% {background: transparent;} }
+  @keyframes flashRed { 0%, 60% {background: rgba(217,88,75,0.92);} 100% {background: transparent;} }
 
   select.auth-select { background: transparent; border: none; color: #F3EAE0; font-family: 'JetBrains Mono', monospace; font-size: 11px; outline: none; cursor: pointer; }
+  select.auth-select option { background: #1c1611; }
   input.pin-field { width: 45px; background: #1c1611; border: 1px solid #3a2c21; color: #F3EAE0; text-align: center; border-radius: 4px; padding: 2px; font-family: 'JetBrains Mono', monospace; font-size: 12px; outline: none; }
   input.pin-field:focus { border-color: #B08662; }
+
+  .leitura { display: flex; align-items: center; gap: 8px; padding: 7px 10px; border-bottom: 1px solid #2a2019; font-family: 'JetBrains Mono', monospace; font-size: 11px; }
+  .leitura:last-child { border-bottom: none; }
+  .leitura .cod { font-weight: 700; color: #F3EAE0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 48%; }
+  .leitura .st { margin-left: auto; text-align: right; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #9C8A78; max-width: 50%; }
+  .leitura.ok .st { color: #6FBF7F; }
+  .leitura.dup .st { color: #E5A93C; }
+  .leitura.erro { background: rgba(217,88,75,0.10); }
+  .leitura.erro .st { color: #D9584B; font-weight: 700; }
+  .leitura.off .st { color: #E5A93C; }
+  .girando { display: inline-block; animation: gira 0.9s linear infinite; }
+  @keyframes gira { to { transform: rotate(360deg); } }
 </style>
 </head>
 <body class="flex flex-col min-h-screen">
@@ -55,8 +68,8 @@
     <div class="flex items-center gap-2">
       <div class="flex items-center gap-2 bg-surface2 px-2 py-1 rounded-xl border border-line shadow-inner">
         <select id="selectUsuario" onchange="alterarUsuarioSelecionado()" class="auth-select"><option value="">A carregar...</option></select>
-        <span class="text-[#3a2c21]">|</span>
-        <input type="password" id="inputPin" maxlength="4" inputmode="numeric" pattern="[0-9]*" placeholder="PIN" class="pin-field" onchange="salvarPinLocal()" oninput="this.value=this.value.replace(/[^0-9]/g,'')" />
+        <span class="text-line">|</span>
+        <input type="password" id="inputPin" maxlength="4" inputmode="numeric" pattern="[0-9]*" placeholder="PIN" class="pin-field" onchange="salvarPinLocal()" oninput="this.value=this.value.replace(/[^0-9]/g,''); salvarPinLocal()" />
       </div>
       <button onclick="sincronizarTudo()" class="p-2 rounded-lg bg-surface2 border border-line text-caramel text-xs font-mono font-bold">↻</button>
     </div>
@@ -83,14 +96,15 @@
     <div class="flex flex-col gap-2 mt-2">
       <div class="flex justify-between items-center px-1">
         <span class="text-[10px] font-mono text-muted uppercase tracking-widest font-bold">Leitor Contínuo (Câmera)</span>
-        <div class="flex items-center gap-3">
+        <div class="flex items-center gap-2">
           <button id="btnTorch" onclick="alternarTorch()" class="hidden text-xs px-2 py-1 rounded-md bg-surface2 border border-line">🔦</button>
-          <button onclick="iniciarCamara()" class="text-[10px] font-mono text-blueprint underline hover:text-white transition">↻ Ligar Câmera</button>
+          <button id="btnTrocarCamera" onclick="trocarCamera()" class="hidden text-xs px-2 py-1 rounded-md bg-surface2 border border-line" title="Trocar câmera">📷</button>
+          <button onclick="iniciarCamara()" class="text-[10px] font-mono text-blueprint underline">↻ Ligar Câmera</button>
         </div>
       </div>
       <div class="video-wrapper shadow-2xl" onclick="forcarFoco()">
         <video id="videoElement" playsinline autoplay muted></video>
-        <div class="scan-guide"></div>
+        <div class="scan-guide" id="scanGuide"></div>
       </div>
       <div id="zoomWrap" style="display:none" class="gap-2 items-center px-1">
         <span class="text-[9px] font-mono text-muted">🔍−</span>
@@ -98,7 +112,7 @@
         <span class="text-[9px] font-mono text-muted">+</span>
       </div>
       <p id="cameraStatus" class="text-[10px] font-mono text-center text-muted">Aguardando câmera...</p>
-      <button onclick="alternarEntradaManual()" class="text-[10px] font-mono text-blueprint underline hover:text-white transition self-center">⌨ Digitar código manualmente</button>
+      <button onclick="alternarEntradaManual()" class="text-[10px] font-mono text-blueprint underline self-center">⌨ Digitar código manualmente</button>
       <div id="entradaManualWrap" style="display:none" class="gap-2 items-center">
         <input type="text" id="inputManual" placeholder="Digite o código da etiqueta" onkeydown="if(event.key==='Enter'){confirmarEntradaManual();}" class="flex-1 bg-surface2 border border-line rounded-lg px-3 py-2 text-sm font-mono text-cream outline-none focus:border-caramel" />
         <button onclick="confirmarEntradaManual()" class="px-3 py-2 rounded-lg bg-caramel/30 border border-caramel/50 text-caramel text-xs font-mono font-bold">OK</button>
@@ -110,20 +124,46 @@
       <div id="lastScanBox" class="text-sm font-mono text-caramelLite font-bold truncate">Nenhum pacote bipado.</div>
       <div id="lastScanSub" class="text-[10px] font-mono text-muted">Insira o PIN e aponte para a etiqueta.</div>
     </div>
+
+    <div class="bg-surface border border-line rounded-xl shadow-md overflow-hidden">
+      <div class="flex justify-between items-center px-3 pt-3 pb-2">
+        <span class="text-[9px] font-mono text-muted uppercase tracking-widest font-bold">Últimas leituras</span>
+        <span id="txtEnviando" class="text-[9px] font-mono text-muted"></span>
+      </div>
+      <div id="listaLeituras"><div class="leitura"><span class="st" style="margin:0">Pode bipar sem esperar a resposta — o resultado aparece aqui.</span></div></div>
+    </div>
   </main>
 
   <script>
+    // =====================================================================
+    //  CONFIGURAÇÃO
+    // =====================================================================
     const API_URL = "https://script.google.com/macros/s/AKfycbzbldDAKkXIA39dyLLbljKI4imrVm0B2hwJzgDnb8aIP38ZL5-nUr4-LEGFKo_VXLx7Mg/exec";
-
-    let codeReader = null; let lastScanCode = ""; let lastScanTime = 0; let listaUsuariosDB = []; let usuarioAtual = { email: "", setor: "" };
-    let audioCtx = null;
-    let currentTrack = null; let torchLigado = false;
-    let wakeLock = null; let enviandoFila = false;
+    const ZXING_URL = "https://unpkg.com/@zxing/library@0.21.0/umd/index.min.js";
+    const FORMATOS_NATIVOS = ['code_128', 'qr_code', 'data_matrix', 'code_39', 'itf', 'ean_13', 'pdf417'];
     const FILA_KEY = 'dc_fila_offline';
+    const CAM_KEY = 'dc_camera_id';
+    const MAX_ENVIOS_SIMULTANEOS = 3;       // leituras validando ao mesmo tempo no servidor
+    const TEMPO_LIMITE_ENVIO = 20000;       // 20 s sem resposta = guarda na fila e reenvia sozinho
+    const MESMA_ETIQUETA_MS = 4000;         // a mesma etiqueta parada na frente da câmera não é reenviada
 
-    // watchdog: religa a câmera sozinho se o loop de leitura parar de responder
-    let ultimoTickScanner = Date.now();
+    // =====================================================================
+    //  ESTADO
+    // =====================================================================
+    let listaUsuariosDB = []; let usuarioAtual = { email: "", setor: "" };
+    let audioCtx = null; let currentTrack = null; let torchLigado = false; let wakeLock = null; let enviandoFila = false;
+    let stream = null; let iniciandoCamera = false; let geracaoLoop = 0; let ultimoTickScanner = Date.now();
+    let motor = ''; let detector = null; let worker = null; let workerOcupado = false; let workerEnviadoEm = 0; let leitorZXing = null;
+    let lastScanCode = ""; let lastScanTime = 0; let ultimoAvisoPin = 0;
+    const emAndamento = new Set();          // códigos validando agora
+    const confirmados = new Map();          // código -> hora em que o servidor confirmou (evita reenviar)
+    const filaEnvio = []; let enviosAtivos = 0;
+    const leituras = [];                    // últimas leituras mostradas na tela
+    const $ = id => document.getElementById(id);
 
+    // =====================================================================
+    //  SOM E VIBRAÇÃO
+    // =====================================================================
     function desbloquearAudio() {
       if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
       if (audioCtx.state === 'suspended') audioCtx.resume();
@@ -132,59 +172,53 @@
     document.addEventListener('click', desbloquearAudio, { once: true });
 
     function emitirSom(tipo) {
-      desbloquearAudio();
+      try { desbloquearAudio(); } catch (e) { return; }
       if (!audioCtx) return;
       const now = audioCtx.currentTime;
       const osc = audioCtx.createOscillator();
       const gain = audioCtx.createGain();
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
-
-      if (tipo === 'sucesso') {
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(880, now);
-        osc.frequency.setValueAtTime(1200, now + 0.08);
-        gain.gain.setValueAtTime(0.3, now);
-        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
-        osc.start(now);
-        osc.stop(now + 0.25);
+      osc.connect(gain); gain.connect(audioCtx.destination);
+      if (tipo === 'lido') {            // "tic" curto na hora da leitura
+        osc.type = 'square'; osc.frequency.setValueAtTime(1500, now);
+        gain.gain.setValueAtTime(0.08, now); gain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+        osc.start(now); osc.stop(now + 0.05);
+      } else if (tipo === 'sucesso') {
+        osc.type = 'sine'; osc.frequency.setValueAtTime(880, now); osc.frequency.setValueAtTime(1200, now + 0.08);
+        gain.gain.setValueAtTime(0.3, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+        osc.start(now); osc.stop(now + 0.25);
       } else if (tipo === 'aviso') {
-        osc.type = 'triangle';
-        osc.frequency.setValueAtTime(480, now);
-        gain.gain.setValueAtTime(0.4, now);
-        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
-        osc.start(now);
-        osc.stop(now + 0.2);
+        osc.type = 'triangle'; osc.frequency.setValueAtTime(480, now);
+        gain.gain.setValueAtTime(0.4, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+        osc.start(now); osc.stop(now + 0.2);
       } else if (tipo === 'erro') {
-        osc.type = 'sawtooth';
-        osc.frequency.setValueAtTime(150, now);
-        gain.gain.setValueAtTime(0.5, now);
-        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
-        osc.start(now);
-        osc.stop(now + 0.4);
+        osc.type = 'sawtooth'; osc.frequency.setValueAtTime(150, now);
+        gain.gain.setValueAtTime(0.5, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
+        osc.start(now); osc.stop(now + 0.5);
       }
     }
+    function vibrar(padrao) { try { if (navigator.vibrate) navigator.vibrate(padrao); } catch (e) {} }
 
+    // =====================================================================
+    //  INÍCIO
+    // =====================================================================
     window.onload = () => {
+      $('inputPin').value = localStorage.getItem('dc_user_pin') || '';
       sincronizarTudo(); iniciarCamara(); ativarWakeLock();
-      document.getElementById('inputPin').value = localStorage.getItem('dc_user_pin') || '';
       atualizarBadgeFila(); processarFila();
-      setInterval(verificarSaudeScanner, 4000);
+      setInterval(verificarSaudeScanner, 3000);
+      setInterval(carregarDados, 30000);       // contadores do servidor a cada 30 s (antes: depois de cada bipe)
+      setInterval(processarFila, 10000);
     };
 
     document.addEventListener('visibilitychange', () => {
       if (!document.hidden) {
-        const video = document.getElementById('videoElement');
-        const stream = video ? video.srcObject : null;
         if (!stream || !stream.active) iniciarCamara();
         if (wakeLock === null) ativarWakeLock();
-        processarFila();
+        processarFila(); carregarDados();
         ultimoTickScanner = Date.now();
       }
     });
-
     window.addEventListener('online', processarFila);
-    setInterval(processarFila, 10000);
 
     async function ativarWakeLock() {
       try {
@@ -195,70 +229,21 @@
       } catch (e) { console.warn('Wake Lock não suportado:', e); }
     }
 
-    function obterFila() {
-      try { return JSON.parse(localStorage.getItem(FILA_KEY)) || []; } catch (e) { return []; }
-    }
-    function salvarFila(fila) { localStorage.setItem(FILA_KEY, JSON.stringify(fila)); atualizarBadgeFila(); }
-    function adicionarNaFila(item) { const fila = obterFila(); fila.push(item); salvarFila(fila); }
-    function atualizarBadgeFila() {
-      const fila = obterFila();
-      const badge = document.getElementById('filaBadge');
-      if (fila.length > 0) {
-        badge.style.display = 'flex';
-        document.getElementById('filaCount').textContent = fila.length;
-      } else {
-        badge.style.display = 'none';
-      }
-    }
-
-    function enviarBipe(item) {
-      return fetch(API_URL, { method: 'POST', body: JSON.stringify({ codigo: item.codigo, email: item.email, setor: item.setor, pin: item.pin }), redirect: 'follow' })
-        .then(res => res.json());
-    }
-
-    function processarFila() {
-      const fila = obterFila();
-      if (fila.length === 0 || enviandoFila || !navigator.onLine) return;
-      enviandoFila = true;
-      const item = fila[0];
-
-      enviarBipe(item)
-        .then(data => {
-          const atual = obterFila(); atual.shift(); salvarFila(atual);
-          carregarDados();
-          enviandoFila = false;
-          if (atual.length > 0) processarFila();
-        })
-        .catch(() => { enviandoFila = false; });
-    }
-
-    function alternarEntradaManual() {
-      const wrap = document.getElementById('entradaManualWrap');
-      const mostrar = wrap.style.display === 'none' || wrap.style.display === '';
-      wrap.style.display = mostrar ? 'flex' : 'none';
-      if (mostrar) document.getElementById('inputManual').focus();
-    }
-    function confirmarEntradaManual() {
-      const campo = document.getElementById('inputManual');
-      const valor = campo.value.trim();
-      if (!valor) return;
-      const pinPreenchido = !!document.getElementById('inputPin').value;
-      onBarcodeDetected(valor);
-      if (pinPreenchido) campo.value = '';
-    }
-
-    function salvarPinLocal() { localStorage.setItem('dc_user_pin', document.getElementById('inputPin').value); }
+    // =====================================================================
+    //  USUÁRIOS, PIN E CONTADORES
+    // =====================================================================
+    function salvarPinLocal() { localStorage.setItem('dc_user_pin', $('inputPin').value); }
     function sincronizarTudo() { carregarUsuarios(); carregarDados(); }
 
     function carregarUsuarios() {
       fetch(`${API_URL}?action=getUsuarios`, { redirect: 'follow' })
         .then(res => res.json())
         .then(usuarios => {
-          listaUsuariosDB = usuarios; const select = document.getElementById('selectUsuario'); select.innerHTML = '';
-          if (usuarios && usuarios.length > 0) {
-            usuarios.forEach(u => { const opt = document.createElement('option'); opt.value = u.email; opt.textContent = u.email.split('@')[0]; select.appendChild(opt); });
+          listaUsuariosDB = usuarios || []; const select = $('selectUsuario'); select.innerHTML = '';
+          if (listaUsuariosDB.length > 0) {
+            listaUsuariosDB.forEach(u => { const opt = document.createElement('option'); opt.value = u.email; opt.textContent = u.email.split('@')[0]; select.appendChild(opt); });
             const savedEmail = localStorage.getItem('dc_user_email');
-            if (savedEmail && usuarios.some(u => u.email === savedEmail)) select.value = savedEmail;
+            if (savedEmail && listaUsuariosDB.some(u => u.email === savedEmail)) select.value = savedEmail;
             alterarUsuarioSelecionado();
           }
           ocultarErroSync();
@@ -266,7 +251,7 @@
     }
 
     function alterarUsuarioSelecionado() {
-      const select = document.getElementById('selectUsuario'); localStorage.setItem('dc_user_email', select.value);
+      const select = $('selectUsuario'); localStorage.setItem('dc_user_email', select.value);
       const uFound = listaUsuariosDB.find(u => u.email === select.value);
       usuarioAtual = uFound ? uFound : { email: select.value, setor: "Expedição 1" };
     }
@@ -274,120 +259,478 @@
     function carregarDados() {
       fetch(`${API_URL}?action=getDados`, { redirect: 'follow' })
         .then(res => res.json())
-        .then(data => { document.getElementById('txtBipados').textContent = data.bipados || 0; document.getElementById('txtPendentes').textContent = data.pendentes || 0; ocultarErroSync(); })
+        .then(data => { $('txtBipados').textContent = data.bipados || 0; $('txtPendentes').textContent = data.pendentes || 0; ocultarErroSync(); })
         .catch(err => { console.error(err); mostrarErroSync(); });
     }
-    function mostrarErroSync() { const el = document.getElementById('syncErrorBanner'); if (el) el.classList.remove('hidden'); }
-    function ocultarErroSync() { const el = document.getElementById('syncErrorBanner'); if (el) el.classList.add('hidden'); }
+    // Atualiza os contadores na hora, sem esperar a próxima consulta ao servidor
+    function contarSeparado() {
+      const b = $('txtBipados'), p = $('txtPendentes');
+      b.textContent = (parseInt(b.textContent, 10) || 0) + 1;
+      p.textContent = Math.max(0, (parseInt(p.textContent, 10) || 0) - 1);
+    }
+    function mostrarErroSync() { $('syncErrorBanner').classList.remove('hidden'); }
+    function ocultarErroSync() { $('syncErrorBanner').classList.add('hidden'); }
 
+    // =====================================================================
+    //  FILA OFFLINE (igual à anterior)
+    // =====================================================================
+    function obterFila() { try { return JSON.parse(localStorage.getItem(FILA_KEY)) || []; } catch (e) { return []; } }
+    function salvarFila(fila) { localStorage.setItem(FILA_KEY, JSON.stringify(fila)); atualizarBadgeFila(); }
+    function adicionarNaFila(item) { const fila = obterFila(); fila.push(item); salvarFila(fila); }
+    function atualizarBadgeFila() {
+      const fila = obterFila(); const badge = $('filaBadge');
+      if (fila.length > 0) { badge.style.display = 'flex'; $('filaCount').textContent = fila.length; }
+      else badge.style.display = 'none';
+    }
+
+    function enviarBipe(item, limiteMs) {
+      const ctrl = window.AbortController ? new AbortController() : null;
+      const timer = ctrl && limiteMs ? setTimeout(() => ctrl.abort(), limiteMs) : null;
+      return fetch(API_URL, {
+        method: 'POST', redirect: 'follow', signal: ctrl ? ctrl.signal : undefined,
+        body: JSON.stringify({ codigo: item.codigo, email: item.email, setor: item.setor, pin: item.pin })
+      }).then(res => res.json()).finally(() => { if (timer) clearTimeout(timer); });
+    }
+
+    function processarFila() {
+      const fila = obterFila();
+      if (fila.length === 0 || enviandoFila || !navigator.onLine) return;
+      enviandoFila = true;
+      const item = fila[0];
+      enviarBipe(item, TEMPO_LIMITE_ENVIO)
+        .then(data => {
+          const atual = obterFila(); atual.shift(); salvarFila(atual);
+          const reg = leituras.find(l => l.codigo === item.codigo && l.estado === 'off');
+          tratarResposta(data, item, reg, true);
+          enviandoFila = false;
+          if (atual.length > 0) processarFila(); else carregarDados();
+        })
+        .catch(() => { enviandoFila = false; });
+    }
+
+    // =====================================================================
+    //  LEITURA → ENVIO (sem travar: dá para bipar o próximo enquanto valida)
+    // =====================================================================
     function extrairCodigoLogistico(raw) {
       if (!raw) return "";
       let str = String(raw).trim();
-
       let matchShopee = str.match(/BR[A-Z0-9]{8,20}/i);
       if (matchShopee) return matchShopee[0].toUpperCase();
-
       let matchAmz = str.match(/(AMZC?|TBA|AZ)[A-Z0-9]{8,20}/i);
       if (matchAmz) return matchAmz[0].toUpperCase();
-
       let matchMeli = str.match(/(MEL|MLB)[A-Z0-9]{8,20}/i);
       if (matchMeli) return matchMeli[0].toUpperCase();
-
       let apenasNumeros = str.replace(/\D/g, "");
       if (apenasNumeros.length === 44) {
         let nfeNum = parseInt(apenasNumeros.substring(25, 34), 10);
         if (nfeNum > 0) return String(nfeNum);
       }
-
       return str.replace(/[^a-zA-Z0-9]/g, "").toUpperCase().trim();
     }
 
-    function verificarSaudeScanner() {
-      if (document.hidden) return;
-      if (Date.now() - ultimoTickScanner > 6000) {
-        console.warn('Scanner sem responder — religando câmera automaticamente.');
-        iniciarCamara();
+    // Quando a etiqueta tem mais de um código (QR + barras), escolhe o mesmo que o leitor antigo escolheria:
+    // primeiro o que tem cara de rastreio (BR…, TBA…, MLB…, chave de NF), depois código de barras, depois QR.
+    function escolherLeitura(lista) {
+      let melhor = null, nota = -1;
+      lista.forEach(l => {
+        const s = String(l.texto || '');
+        if (!s) return;
+        let n = 0;
+        if (/BR[A-Z0-9]{8,20}|(AMZC?|TBA|AZ)[A-Z0-9]{8,20}|(MEL|MLB)[A-Z0-9]{8,20}/i.test(s) || s.replace(/\D/g, '').length === 44) n += 10;
+        if (!/qr|data_matrix|pdf|QR_CODE|DATA_MATRIX|PDF_417/i.test(l.formato || '')) n += 5;
+        if (n > nota) { nota = n; melhor = s; }
+      });
+      return melhor;
+    }
+
+    function onBarcodeDetected(rawCode) {
+      const code = extrairCodigoLogistico(rawCode);
+      if (!code) return;
+      const agora = Date.now();
+
+      // Mesma etiqueta ainda parada na frente da câmera: ignora em silêncio
+      if (code === lastScanCode && (agora - lastScanTime) < MESMA_ETIQUETA_MS) { lastScanTime = agora; return; }
+
+      const pin = $('inputPin').value;
+      if (!pin) {
+        lastScanCode = code; lastScanTime = agora;
+        if (agora - ultimoAvisoPin > 2500) {
+          ultimoAvisoPin = agora;
+          emitirSom('erro'); vibrar([200, 100, 200]);
+          flashVisual('error', 'PIN REQUERIDO', 'DIGITE A SUA SENHA NO TOPO');
+          $('lastScanSub').textContent = "⚠️ Digite o seu PIN de 4 dígitos!";
+        }
+        return;
+      }
+      lastScanCode = code; lastScanTime = agora;
+      if (emAndamento.has(code) || filaEnvio.some(f => f.dados.codigo === code)) return;
+
+      // Já confirmado pelo servidor nesta sessão: avisa na hora, sem gastar uma consulta
+      if (confirmados.has(code)) {
+        emitirSom('aviso'); vibrar([100, 50, 100]);
+        flashVisual('warning', 'JÁ BIPADO', 'ESTE PACOTE JÁ FOI SEPARADO');
+        $('lastScanBox').textContent = code;
+        $('lastScanSub').textContent = "⚠️ Pacote já bipado anteriormente.";
+        registrarLeitura(code, 'dup', 'já bipado');
+        return;
+      }
+
+      // Lido! Retorno imediato e segue para o próximo
+      emitirSom('lido'); vibrar(30); piscarGuia();
+      $('lastScanBox').textContent = code;
+      $('lastScanSub').textContent = "Lido — validando no servidor... pode bipar o próximo.";
+      const reg = registrarLeitura(code, 'env', 'validando');
+      filaEnvio.push({ dados: { codigo: code, email: usuarioAtual.email, setor: usuarioAtual.setor, pin: pin, ts: agora }, reg: reg });
+      bombearEnvios();
+    }
+
+    function bombearEnvios() {
+      while (enviosAtivos < MAX_ENVIOS_SIMULTANEOS && filaEnvio.length) {
+        const { dados, reg } = filaEnvio.shift();
+        enviosAtivos++; emAndamento.add(dados.codigo);
+        enviarBipe(dados, TEMPO_LIMITE_ENVIO)
+          .then(data => tratarResposta(data, dados, reg, false))
+          .catch(() => tratarFalhaRede(dados, reg))
+          .finally(() => { enviosAtivos--; emAndamento.delete(dados.codigo); atualizarEnviando(); bombearEnvios(); });
+      }
+      atualizarEnviando();
+    }
+
+    function atualizarEnviando() {
+      const n = enviosAtivos + filaEnvio.length;
+      $('txtEnviando').innerHTML = n ? '<span class="girando">⏳</span> ' + n + ' validando' : '';
+    }
+
+    function tratarResposta(data, dados, reg, veioDaFila) {
+      data = data || {};
+      const code = dados.codigo;
+      const msgTexto = (data.msg || "").toLowerCase();
+      const ultimo = code === lastScanCode;
+
+      if (data.status === "duplicado" || data.status === "ja_separado" || msgTexto.includes("já foi") || msgTexto.includes("ja foi")) {
+        confirmados.set(code, Date.now());
+        let subTitulo = "ESTE PACOTE JÁ FOI BIPADO";
+        if (msgTexto.includes("impress")) subTitulo = "JÁ IMPRESSO PELO ESCRITÓRIO";
+        else if (msgTexto.includes("separad")) subTitulo = "JÁ SEPARADO NA GAIOLA";
+        atualizarLeitura(reg, code, 'dup', 'já bipado');
+        if (!veioDaFila) {
+          emitirSom('aviso'); vibrar([100, 50, 100]);
+          flashVisual('warning', 'JÁ BIPADO', subTitulo + (ultimo ? '' : ' · ' + code));
+        }
+        if (ultimo) $('lastScanSub').textContent = "⚠️ " + (data.msg || "Pacote já bipado anteriormente.");
+      }
+      else if ((data.status || "").includes("erro")) {
+        let tituloErro = "ATENÇÃO";
+        if (msgTexto.includes("pin")) tituloErro = "PIN INCORRETO";
+        else if (msgTexto.includes("não imprimiu") || msgTexto.includes("bipe 1")) tituloErro = "FALTA BIPE 1";
+        atualizarLeitura(reg, code, 'erro', tituloErro.toLowerCase() + (data.msg ? ' — ' + data.msg : ''));
+        emitirSom('erro'); vibrar([300, 100, 300]);
+        flashVisual('error', tituloErro, code + ' · ' + (data.msg || 'Ação necessária'));
+        $('lastScanBox').textContent = code;
+        $('lastScanSub').textContent = "🚨 " + (data.msg || "Verifique o pacote.");
+      }
+      else {
+        confirmados.set(code, Date.now());
+        contarSeparado();
+        atualizarLeitura(reg, code, 'ok', ((data.marketplace || '') + ' · ' + (data.produto || 'separado')).replace(/^ · /, ''));
+        if (!veioDaFila) {
+          emitirSom('sucesso'); vibrar(100);
+          flashVisual('stageTwo', 'SEPARADO', 'GAIOLA CONFIRMADA' + (ultimo ? '' : ' · ' + code));
+        }
+        if (ultimo) $('lastScanSub').textContent = `${data.marketplace || ''} · ${data.produto || ''}`;
       }
     }
 
-    // ============================================================
-    // CÂMERA — lógica idêntica à versão que funcionava: sem hints,
-    // sem restrição de formatos, sem TRY_HARDER e sem forçar
-    // resolução/foco na abertura da câmera. É exatamente isso que
-    // fazia a leitura funcionar antes; qualquer constraint extra
-    // aqui tende a atrapalhar o getUserMedia em vez de ajudar.
-    // ============================================================
-    function iniciarCamara() {
-      const statusEl = document.getElementById('cameraStatus');
-      if (!codeReader) codeReader = new ZXing.BrowserMultiFormatReader();
-      else { try { codeReader.reset(); } catch (e) {} }
-
-      codeReader.listVideoInputDevices().then(videoDevices => {
-        let selectedDeviceId = null;
-        if (videoDevices.length > 0) {
-          let backCam = videoDevices.find(d => d.label.toLowerCase().includes('back') || d.label.toLowerCase().includes('environment'));
-          selectedDeviceId = backCam ? backCam.deviceId : videoDevices[videoDevices.length - 1].deviceId;
-        }
-        // Se não achou um deviceId confiável (labels vazios antes da permissão
-        // ser concedida pela 1ª vez), deixa null: o ZXing cai automaticamente
-        // em { facingMode: 'environment' }, que é robusto e não falha.
-        codeReader.decodeFromVideoDevice(selectedDeviceId, 'videoElement', (result, err) => {
-          ultimoTickScanner = Date.now();
-          if (result && result.getText()) onBarcodeDetected(result.getText());
-        });
-        statusEl.textContent = "Câmera ativada! Pode bipar.";
-        ultimoTickScanner = Date.now();
-        setTimeout(configurarControlesAvancados, 500);
-      }).catch(err => { statusEl.textContent = "Erro de permissão da câmera."; });
+    function tratarFalhaRede(dados, reg) {
+      adicionarNaFila(dados);
+      atualizarLeitura(reg, dados.codigo, 'off', 'sem conexão — na fila');
+      emitirSom('aviso'); vibrar([150, 80, 150]);
+      flashVisual('warning', 'SEM CONEXÃO', 'SALVO — SERÁ ENVIADO SOZINHO');
+      if (dados.codigo === lastScanCode) $('lastScanSub').textContent = "📴 Sem internet agora. Leitura guardada, será reenviada automaticamente.";
     }
 
-    // Torch/zoom são aplicados DEPOIS que a câmera já está rodando,
-    // então não interferem em nada na hora de abrir a câmera.
+    // ---------- lista "Últimas leituras" ----------
+    function registrarLeitura(codigo, estado, texto) {
+      const reg = { codigo, estado, texto, hora: new Date() };
+      leituras.unshift(reg);
+      if (leituras.length > 8) leituras.length = 8;
+      desenharLeituras();
+      return reg;
+    }
+    function atualizarLeitura(reg, codigo, estado, texto) {
+      if (!reg) reg = leituras.find(l => l.codigo === codigo);
+      if (!reg) { registrarLeitura(codigo, estado, texto); return; }
+      reg.estado = estado; reg.texto = texto;
+      desenharLeituras();
+    }
+    function desenharLeituras() {
+      const icone = { env: '<span class="girando">⏳</span>', ok: '✅', dup: '⚠️', erro: '❌', off: '📴' };
+      const classe = { env: '', ok: 'ok', dup: 'dup', erro: 'erro', off: 'off' };
+      const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+      $('listaLeituras').innerHTML = leituras.map(l =>
+        `<div class="leitura ${classe[l.estado]}"><span>${icone[l.estado]}</span><span class="cod">${esc(l.codigo)}</span><span class="st">${esc(l.texto)}</span></div>`
+      ).join('');
+    }
+
+    // ---------- entrada manual ----------
+    function alternarEntradaManual() {
+      const wrap = $('entradaManualWrap');
+      const mostrar = wrap.style.display === 'none' || wrap.style.display === '';
+      wrap.style.display = mostrar ? 'flex' : 'none';
+      if (mostrar) $('inputManual').focus();
+    }
+    function confirmarEntradaManual() {
+      const campo = $('inputManual');
+      const valor = campo.value.trim();
+      if (!valor) return;
+      const pinPreenchido = !!$('inputPin').value;
+      lastScanCode = '';                 // digitado de propósito: não cai na trava de "mesma etiqueta"
+      onBarcodeDetected(valor);
+      if (pinPreenchido) campo.value = '';
+    }
+
+    // =====================================================================
+    //  CÂMERA E LEITOR
+    //  1º) Leitor nativo do Android (BarcodeDetector): rápido e fora da tela.
+    //  2º) Sem ele (iPhone, alguns aparelhos): ZXing num "worker" separado,
+    //      lendo só a área da moldura, sem congelar a tela.
+    // =====================================================================
+    async function prepararMotor() {
+      if (motor) return motor;
+      if ('BarcodeDetector' in window) {
+        try {
+          const suportados = await BarcodeDetector.getSupportedFormats();
+          const formatos = FORMATOS_NATIVOS.filter(f => suportados.includes(f));
+          if (formatos.includes('code_128')) { detector = new BarcodeDetector({ formats: formatos }); motor = 'nativo'; return motor; }
+        } catch (e) { console.warn('BarcodeDetector indisponível:', e); }
+      }
+      try { worker = await criarWorker(); motor = 'worker'; return motor; }
+      catch (e) { console.warn('Worker indisponível, usando leitor na página:', e); }
+      await carregarScript(ZXING_URL);
+      leitorZXing = criarLeitorZXing(window.ZXing);
+      motor = 'pagina';
+      return motor;
+    }
+
+    const WORKER_SRC = `
+      let leitor = null;
+      try {
+        importScripts('${ZXING_URL}');
+        const F = ZXing.BarcodeFormat, h = new Map();
+        h.set(ZXing.DecodeHintType.POSSIBLE_FORMATS, [F.CODE_128, F.CODE_39, F.ITF, F.EAN_13, F.QR_CODE, F.DATA_MATRIX]);
+        leitor = new ZXing.MultiFormatReader(); leitor.setHints(h);
+        postMessage({ tipo: 'pronto' });
+      } catch (e) { postMessage({ tipo: 'falha', msg: String((e && e.message) || e) }); }
+      onmessage = function (ev) {
+        const d = ev.data; let texto = null, formato = null;
+        if (leitor) {
+          const px = new Uint8ClampedArray(d.buf), n = d.w * d.h, lum = new Uint8ClampedArray(n);
+          for (let i = 0, j = 0; i < n; i++, j += 4) lum[i] = (px[j] * 77 + px[j + 1] * 150 + px[j + 2] * 29) >> 8;
+          try {
+            const r = leitor.decodeWithState(new ZXing.BinaryBitmap(new ZXing.HybridBinarizer(new ZXing.RGBLuminanceSource(lum, d.w, d.h))));
+            texto = r.getText(); formato = ZXing.BarcodeFormat[r.getBarcodeFormat()];
+          } catch (e) {}
+        }
+        postMessage({ tipo: 'resultado', texto: texto, formato: formato });
+      };`;
+
+    function criarWorker() {
+      return new Promise((resolve, reject) => {
+        let w;
+        try { w = new Worker(URL.createObjectURL(new Blob([WORKER_SRC], { type: 'text/javascript' }))); }
+        catch (e) { reject(e); return; }
+        const limite = setTimeout(() => { try { w.terminate(); } catch (e) {} reject(new Error('worker demorou para carregar')); }, 15000);
+        w.onmessage = ev => {
+          if (ev.data.tipo === 'pronto') {
+            clearTimeout(limite);
+            w.onmessage = e2 => {
+              workerOcupado = false;
+              if (e2.data.texto) onBarcodeDetected(escolherLeitura([e2.data]));
+            };
+            resolve(w);
+          } else if (ev.data.tipo === 'falha') { clearTimeout(limite); w.terminate(); reject(new Error(ev.data.msg)); }
+        };
+        w.onerror = e => { clearTimeout(limite); reject(e); };
+      });
+    }
+
+    function carregarScript(src) {
+      return new Promise((resolve, reject) => {
+        if (window.ZXing) return resolve();
+        const s = document.createElement('script'); s.src = src; s.onload = resolve; s.onerror = reject;
+        document.head.appendChild(s);
+      });
+    }
+
+    function criarLeitorZXing(Z) {
+      const F = Z.BarcodeFormat, h = new Map();
+      h.set(Z.DecodeHintType.POSSIBLE_FORMATS, [F.CODE_128, F.CODE_39, F.ITF, F.EAN_13, F.QR_CODE, F.DATA_MATRIX]);
+      const r = new Z.MultiFormatReader(); r.setHints(h);
+      return img => {
+        const n = img.width * img.height, px = img.data, lum = new Uint8ClampedArray(n);
+        for (let i = 0, j = 0; i < n; i++, j += 4) lum[i] = (px[j] * 77 + px[j + 1] * 150 + px[j + 2] * 29) >> 8;
+        try { const res = r.decodeWithState(new Z.BinaryBitmap(new Z.HybridBinarizer(new Z.RGBLuminanceSource(lum, img.width, img.height)))); return { texto: res.getText(), formato: F[res.getBarcodeFormat()] }; }
+        catch (e) { return null; }
+      };
+    }
+
+    // Recorta só a área da moldura (menos pixels = leitura mais rápida).
+    // A cada 3 quadros, manda o recorte girado 90°, para etiqueta de lado.
+    const canvasCap = document.createElement('canvas');
+    const ctxCap = canvasCap.getContext('2d', { willReadFrequently: true });
+    let numeroQuadro = 0;
+    function capturarRecorte(video) {
+      const vw = video.videoWidth, vh = video.videoHeight;
+      if (!vw || !vh) return null;
+      const cw = Math.round(vw * 0.9), ch = Math.round(vh * 0.75);
+      const sx = Math.round((vw - cw) / 2), sy = Math.round((vh - ch) / 2);
+      const escala = Math.min(1, 960 / cw);
+      let w = Math.round(cw * escala), h = Math.round(ch * escala);
+      const girar = (numeroQuadro++ % 3 === 2);
+      const cwFinal = girar ? h : w, chFinal = girar ? w : h;
+      if (canvasCap.width !== cwFinal) canvasCap.width = cwFinal;
+      if (canvasCap.height !== chFinal) canvasCap.height = chFinal;
+      if (girar) {
+        ctxCap.setTransform(0, 1, -1, 0, h, 0);      // gira 90° no sentido horário
+        ctxCap.drawImage(video, sx, sy, cw, ch, 0, 0, w, h);
+        ctxCap.setTransform(1, 0, 0, 1, 0, 0);
+      } else {
+        ctxCap.drawImage(video, sx, sy, cw, ch, 0, 0, w, h);
+      }
+      return ctxCap.getImageData(0, 0, cwFinal, chFinal);
+    }
+
+    function iniciarLoop() {
+      const minhaGeracao = ++geracaoLoop;
+      const video = $('videoElement');
+      const intervalo = motor === 'nativo' ? 70 : motor === 'worker' ? 90 : 220;
+      const ciclo = async () => {
+        if (minhaGeracao !== geracaoLoop) return;              // outra câmera assumiu
+        try {
+          if (!document.hidden && video.readyState >= 2 && video.videoWidth) {
+            ultimoTickScanner = Date.now();
+            if (motor === 'nativo') {
+              const cods = await detector.detect(video);
+              if (cods && cods.length) onBarcodeDetected(escolherLeitura(cods.map(c => ({ texto: c.rawValue, formato: c.format }))));
+            } else if (motor === 'worker') {
+              if (workerOcupado && Date.now() - workerEnviadoEm > 3000) workerOcupado = false;   // destrava se algo se perdeu
+              if (!workerOcupado) {
+                const img = capturarRecorte(video);
+                if (img) { workerOcupado = true; workerEnviadoEm = Date.now(); worker.postMessage({ w: img.width, h: img.height, buf: img.data.buffer }, [img.data.buffer]); }
+              }
+            } else if (motor === 'pagina' && leitorZXing) {
+              const img = capturarRecorte(video);
+              const r = img && leitorZXing(img);
+              if (r) onBarcodeDetected(escolherLeitura([r]));
+            }
+          }
+        } catch (e) { console.warn('Falha na leitura:', e); }
+        if (minhaGeracao === geracaoLoop) setTimeout(ciclo, intervalo);
+      };
+      ciclo();
+    }
+
+    function pararCamera() {
+      geracaoLoop++;
+      if (stream) { try { stream.getTracks().forEach(t => t.stop()); } catch (e) {} }
+      stream = null; currentTrack = null;
+    }
+
+    async function abrirStream(deviceId) {
+      const tentativas = [];
+      if (deviceId) tentativas.push({ audio: false, video: { deviceId: { exact: deviceId }, width: { ideal: 1280 }, height: { ideal: 720 } } });
+      tentativas.push({ audio: false, video: { facingMode: { ideal: 'environment' }, width: { ideal: 1280 }, height: { ideal: 720 } } });
+      tentativas.push({ audio: false, video: { facingMode: 'environment' } });
+      tentativas.push({ audio: false, video: true });
+      let ultimoErro = null;
+      for (const c of tentativas) {
+        try { return await navigator.mediaDevices.getUserMedia(c); }
+        catch (e) { ultimoErro = e; if (e && e.name === 'NotAllowedError') break; }
+      }
+      throw ultimoErro || new Error('câmera indisponível');
+    }
+
+    async function iniciarCamara() {
+      if (iniciandoCamera) return;
+      iniciandoCamera = true;
+      const statusEl = $('cameraStatus');
+      statusEl.textContent = 'Ligando câmera...';
+      try {
+        pararCamera();
+        await prepararMotor();
+        stream = await abrirStream(localStorage.getItem(CAM_KEY));
+        const video = $('videoElement');
+        video.srcObject = stream;
+        try { await video.play(); } catch (e) {}
+        currentTrack = stream.getVideoTracks()[0] || null;
+        if (currentTrack) currentTrack.applyConstraints({ advanced: [{ focusMode: 'continuous' }] }).catch(() => {});
+        configurarControlesAvancados();
+        const s = currentTrack && currentTrack.getSettings ? currentTrack.getSettings() : {};
+        statusEl.textContent = 'Câmera ativada! Pode bipar. · ' + (motor === 'nativo' ? '⚡ leitor do aparelho' : 'leitor compatível') + (s.width ? ` · ${s.width}×${s.height}` : '');
+        ultimoTickScanner = Date.now();
+        iniciarLoop();
+      } catch (e) {
+        statusEl.textContent = (e && e.name === 'NotAllowedError') ? 'Permissão da câmera negada. Libere nas configurações do navegador.' : 'Erro ao abrir a câmera. Toque em "Ligar Câmera".';
+        console.error(e);
+      } finally {
+        iniciandoCamera = false;
+      }
+    }
+
+    function verificarSaudeScanner() {
+      if (document.hidden || iniciandoCamera) return;
+      const parado = Date.now() - ultimoTickScanner > 6000;
+      const caiu = stream && !stream.active;
+      if (parado || caiu) { console.warn('Scanner parado — religando câmera.'); iniciarCamara(); }
+    }
+
     function configurarControlesAvancados() {
       try {
-        const video = document.getElementById('videoElement');
-        const stream = video ? video.srcObject : null;
-        if (!stream) return;
-        currentTrack = stream.getVideoTracks()[0];
         if (!currentTrack) return;
-
         const caps = currentTrack.getCapabilities ? currentTrack.getCapabilities() : {};
+        const btnTorch = $('btnTorch');
+        torchLigado = false; btnTorch.classList.remove('bg-caramel/40');
+        btnTorch.classList.toggle('hidden', !caps.torch);
 
-        const btnTorch = document.getElementById('btnTorch');
-        torchLigado = false;
-        btnTorch.classList.remove('bg-caramel/40');
-        if (caps.torch) { btnTorch.classList.remove('hidden'); } else { btnTorch.classList.add('hidden'); }
-
-        const zoomWrap = document.getElementById('zoomWrap');
-        const zoomSlider = document.getElementById('zoomSlider');
+        const zoomWrap = $('zoomWrap'), zoomSlider = $('zoomSlider');
         if (caps.zoom && caps.zoom.max > caps.zoom.min) {
           zoomWrap.style.display = 'flex';
           zoomSlider.min = caps.zoom.min; zoomSlider.max = caps.zoom.max; zoomSlider.step = caps.zoom.step || 0.1;
           zoomSlider.value = (currentTrack.getSettings().zoom) || caps.zoom.min;
-        } else {
-          zoomWrap.style.display = 'none';
-        }
+        } else zoomWrap.style.display = 'none';
 
-        currentTrack.onended = () => {
-          const statusEl = document.getElementById('cameraStatus');
-          if (statusEl) statusEl.textContent = "Câmera perdida. Reconectando...";
-          setTimeout(iniciarCamara, 600);
-        };
+        navigator.mediaDevices.enumerateDevices().then(devs => {
+          $('btnTrocarCamera').classList.toggle('hidden', devs.filter(d => d.kind === 'videoinput').length < 2);
+        }).catch(() => {});
+
+        currentTrack.onended = () => { $('cameraStatus').textContent = "Câmera perdida. Reconectando..."; setTimeout(iniciarCamara, 600); };
       } catch (e) { console.warn('Controles não suportados neste aparelho:', e); }
+    }
+
+    // Alguns celulares abrem a lente grande-angular (sem foco de perto). O 📷 troca e o aparelho lembra.
+    async function trocarCamera() {
+      try {
+        const devs = (await navigator.mediaDevices.enumerateDevices()).filter(d => d.kind === 'videoinput');
+        if (devs.length < 2) return;
+        const atual = currentTrack && currentTrack.getSettings ? currentTrack.getSettings().deviceId : '';
+        const idx = devs.findIndex(d => d.deviceId === atual);
+        const prox = devs[(idx + 1) % devs.length];
+        localStorage.setItem(CAM_KEY, prox.deviceId);
+        await iniciarCamara();
+        $('cameraStatus').textContent += ' · ' + (prox.label || ('câmera ' + ((idx + 1) % devs.length + 1)));
+      } catch (e) { console.warn(e); }
     }
 
     function alternarTorch() {
       if (!currentTrack) return;
       torchLigado = !torchLigado;
       currentTrack.applyConstraints({ advanced: [{ torch: torchLigado }] }).catch(() => {});
-      document.getElementById('btnTorch').classList.toggle('bg-caramel/40', torchLigado);
+      $('btnTorch').classList.toggle('bg-caramel/40', torchLigado);
     }
-
     function ajustarZoom(valor) {
       if (!currentTrack) return;
       currentTrack.applyConstraints({ advanced: [{ zoom: Number(valor) }] }).catch(() => {});
     }
-
     function forcarFoco() {
       if (!currentTrack) return;
       currentTrack.applyConstraints({ advanced: [{ focusMode: 'single-shot' }] })
@@ -395,74 +738,22 @@
         .catch(() => {});
     }
 
-    function onBarcodeDetected(rawCode) {
-      const code = extrairCodigoLogistico(rawCode);
-      const pin = document.getElementById('inputPin').value;
-
-      if (!pin) {
-        emitirSom('erro');
-        if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
-        flashVisual('error', 'PIN REQUERIDO', 'DIGITE A SUA SENHA NO TOPO');
-        document.getElementById('lastScanSub').textContent = "⚠️ Digite o seu PIN de 4 dígitos!";
-        return;
-      }
-
-      const agora = Date.now();
-      if (!code || (code === lastScanCode && (agora - lastScanTime) < 2500)) return;
-      lastScanCode = code; lastScanTime = agora;
-
-      document.getElementById('lastScanBox').textContent = code;
-      document.getElementById('lastScanSub').textContent = "A validar e registrar separação...";
-
-      fetch(API_URL, { method: 'POST', body: JSON.stringify({ codigo: code, email: usuarioAtual.email, setor: usuarioAtual.setor, pin: pin }), redirect: 'follow' })
-      .then(res => res.json())
-      .then(data => {
-        const msgTexto = (data.msg || "").toLowerCase();
-
-        if (data.status === "duplicado" || data.status === "ja_separado" || msgTexto.includes("já foi") || msgTexto.includes("ja foi")) {
-          emitirSom('aviso');
-          if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
-
-          let subTitulo = "ESTE PACOTE JÁ FOI BIPADO";
-          if (msgTexto.includes("impress")) subTitulo = "JÁ IMPRESSO PELO ESCRITÓRIO";
-          else if (msgTexto.includes("separad")) subTitulo = "JÁ SEPARADO NA GAIOLA";
-
-          flashVisual('warning', 'JÁ BIPADO', subTitulo);
-          document.getElementById('lastScanSub').textContent = "⚠️ " + (data.msg || "Pacote já bipado anteriormente.");
-        }
-        else if ((data.status || "").includes("erro")) {
-          emitirSom('erro');
-          if (navigator.vibrate) navigator.vibrate([300, 100, 300]);
-
-          let tituloErro = "ATENÇÃO";
-          if (msgTexto.includes("pin")) tituloErro = "PIN INCORRETO";
-          else if (msgTexto.includes("não imprimiu") || msgTexto.includes("bipe 1")) tituloErro = "FALTA BIPE 1";
-
-          flashVisual('error', tituloErro, data.msg || 'Ação necessária');
-          document.getElementById('lastScanSub').textContent = "🚨 " + (data.msg || "Verifique o pacote.");
-        }
-        else {
-          emitirSom('sucesso');
-          if (navigator.vibrate) navigator.vibrate([100]);
-
-          flashVisual('stageTwo', 'SEPARADO', 'GAIOLA CONFIRMADA');
-          document.getElementById('lastScanSub').textContent = `${data.marketplace || ''} · ${data.produto || ''}`;
-          carregarDados();
-        }
-      })
-      .catch(err => {
-        adicionarNaFila({ codigo: code, email: usuarioAtual.email, setor: usuarioAtual.setor, pin: pin, ts: Date.now() });
-        emitirSom('aviso');
-        if (navigator.vibrate) navigator.vibrate([150, 80, 150]);
-        flashVisual('warning', 'SEM CONEXÃO', 'SALVO — SERÁ ENVIADO SOZINHO');
-        document.getElementById('lastScanSub').textContent = "📴 Sem internet agora. Leitura guardada, será reenviada automaticamente.";
-      });
-    }
-
+    // =====================================================================
+    //  FEEDBACK VISUAL
+    // =====================================================================
+    let timerFlash = null;
     function flashVisual(tipo, titulo, sub) {
-      const o = document.getElementById('feedbackOverlay'); o.className = tipo + ' show';
-      document.getElementById('fbEyebrow').textContent = sub; document.getElementById('fbMain').textContent = titulo;
-      setTimeout(() => { o.className = ''; }, 800);
+      const o = $('feedbackOverlay');
+      o.className = ''; void o.offsetWidth;                 // reinicia a animação se vierem dois seguidos
+      o.className = tipo + ' show';
+      $('fbEyebrow').textContent = sub; $('fbMain').textContent = titulo;
+      clearTimeout(timerFlash);
+      timerFlash = setTimeout(() => { o.className = ''; }, tipo === 'error' ? 1100 : 750);
+    }
+    let timerGuia = null;
+    function piscarGuia() {
+      const g = $('scanGuide'); g.classList.add('lido');
+      clearTimeout(timerGuia); timerGuia = setTimeout(() => g.classList.remove('lido'), 350);
     }
   </script>
 </body>
