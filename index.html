@@ -121,7 +121,7 @@
     <section id="telaBipar" class="flex flex-col gap-4">
     <div class="grid grid-cols-2 gap-3">
       <div class="bg-surface border border-warning/30 rounded-xl p-3 flex items-center justify-between shadow-lg">
-        <div><span class="text-[9px] font-mono text-warning uppercase font-bold block mb-1">Pendentes</span><span id="txtPendentes" class="font-display text-3xl text-warning leading-none">0</span></div>
+        <div><span id="lblPendentes" class="text-[9px] font-mono text-warning uppercase font-bold block mb-1">Pendentes</span><span id="txtPendentes" class="font-display text-3xl text-warning leading-none">0</span></div>
         <span class="text-2xl opacity-80">📦</span>
       </div>
       <div class="bg-surface border border-success/30 rounded-xl p-3 flex items-center justify-between shadow-lg">
@@ -213,9 +213,19 @@
     // =====================================================================
     //  ESTADO
     // =====================================================================
-    let listaUsuariosDB = []; let usuarioAtual = { email: "", setor: "" };
-    let audioCtx = null; let currentTrack = null; let torchLigado = false; let wakeLock = null; let enviandoFila = false;
-    let stream = null; let iniciandoCamera = false; let geracaoLoop = 0; let ultimoTickScanner = Date.now();
+    let listaUsuariosDB = [];
+    let usuarioAtual = { email: "", setor: "" };
+    let audioCtx = null;
+    let currentTrack = null;
+    let torchLigado = false;
+    let wakeLock = null;
+    let enviandoFila = false;
+    let dadosRequestId = 0;
+    let ultimoSetorConsultado = "";
+    let stream = null;
+    let iniciandoCamera = false;
+    let geracaoLoop = 0;
+    let ultimoTickScanner = Date.now();
     let motor = ''; let detector = null; let worker = null; let workerOcupado = false; let workerEnviadoEm = 0; let leitorZXing = null;
     let lastScanCode = ""; let lastScanTime = 0; let ultimoAvisoPin = 0;
     const emAndamento = new Set();          // códigos validando agora
@@ -300,6 +310,7 @@
     // =====================================================================
     window.onload = () => {
       $('inputPin').value = localStorage.getItem('dc_user_pin') || '';
+      atualizarRotuloPendentes();
       desenharLeituras(); atualizarQtdHistorico();
       sincronizarTudo(); iniciarCamara(); ativarWakeLock();
       atualizarBadgeFila(); processarFila();
@@ -331,39 +342,136 @@
     //  USUÁRIOS, PIN E CONTADORES
     // =====================================================================
     function salvarPinLocal() { localStorage.setItem('dc_user_pin', $('inputPin').value); }
-    function sincronizarTudo() { carregarUsuarios(); carregarDados(); }
-
-    function carregarUsuarios() {
-      fetch(`${API_URL}?action=getUsuarios`, { redirect: 'follow' })
-        .then(res => res.json())
-        .then(usuarios => {
-          listaUsuariosDB = usuarios || []; const select = $('selectUsuario'); select.innerHTML = '';
-          if (listaUsuariosDB.length > 0) {
-            listaUsuariosDB.forEach(u => { const opt = document.createElement('option'); opt.value = u.email; opt.textContent = u.email.split('@')[0]; select.appendChild(opt); });
-            const savedEmail = localStorage.getItem('dc_user_email');
-            if (savedEmail && listaUsuariosDB.some(u => u.email === savedEmail)) select.value = savedEmail;
-            alterarUsuarioSelecionado();
-          }
-          ocultarErroSync();
-        }).catch(err => { console.error(err); mostrarErroSync(); });
+    function sincronizarTudo() {
+      carregarUsuarios();
     }
 
-    function alterarUsuarioSelecionado() {
-      const select = $('selectUsuario'); localStorage.setItem('dc_user_email', select.value);
-      const uFound = listaUsuariosDB.find(u => u.email === select.value);
-      usuarioAtual = uFound ? uFound : { email: select.value, setor: "Expedição 1" };
+    function normalizarSetorTela(setor) {
+      return String(setor || '')
+        .trim()
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '');
+    }
+
+    function setorExpedicaoAtual() {
+      const setor = normalizarSetorTela(usuarioAtual && usuarioAtual.setor);
+      if (setor === 'expedicao 1') return 'Expedição 1';
+      if (setor === 'expedicao 2') return 'Expedição 2';
+      return ''; // Escritório/TI veem o total geral.
+    }
+
+    function atualizarRotuloPendentes() {
+      const setor = setorExpedicaoAtual();
+      $('lblPendentes').textContent = setor
+        ? `Pendentes · ${setor.replace('Expedição ', 'EXP ')}`
+        : 'Pendentes';
+    }
+
+    function carregarUsuarios() {
+      fetch(`${API_URL}?action=getUsuarios`, { redirect: 'follow', cache: 'no-store' })
+        .then(res => {
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          return res.json();
+        })
+        .then(usuarios => {
+          listaUsuariosDB = Array.isArray(usuarios) ? usuarios : [];
+          const select = $('selectUsuario');
+          select.innerHTML = '';
+
+          if (!listaUsuariosDB.length) {
+            usuarioAtual = { email: '', setor: '' };
+            atualizarRotuloPendentes();
+            carregarDados();
+            return;
+          }
+
+          listaUsuariosDB.forEach(u => {
+            const opt = document.createElement('option');
+            opt.value = u.email || '';
+            opt.textContent = String(u.email || '').split('@')[0];
+            select.appendChild(opt);
+          });
+
+          const savedEmail = localStorage.getItem('dc_user_email');
+          if (savedEmail && listaUsuariosDB.some(u => u.email === savedEmail)) {
+            select.value = savedEmail;
+          }
+
+          alterarUsuarioSelecionado(false);
+          ocultarErroSync();
+        })
+        .catch(err => {
+          console.error('Erro ao carregar usuários:', err);
+          mostrarErroSync();
+        });
+    }
+
+    function alterarUsuarioSelecionado(carregar = true) {
+      const select = $('selectUsuario');
+      const email = select.value || '';
+      localStorage.setItem('dc_user_email', email);
+
+      const uFound = listaUsuariosDB.find(u => u.email === email);
+      usuarioAtual = uFound
+        ? { email: uFound.email || '', setor: uFound.setor || '' }
+        : { email, setor: 'Expedição 1' };
+
+      atualizarRotuloPendentes();
+
       if (abaAtual === 'historico') desenharHistorico();
+      if (carregar) carregarDados();
     }
 
     function carregarDados() {
-      fetch(`${API_URL}?action=getDados`, { redirect: 'follow' })
-        .then(res => res.json())
-        .then(data => { $('txtBipados').textContent = data.bipados || 0; $('txtPendentes').textContent = data.pendentes || 0; ocultarErroSync(); })
-        .catch(err => { console.error(err); mostrarErroSync(); });
+      const setor = setorExpedicaoAtual();
+      const requestId = ++dadosRequestId;
+      ultimoSetorConsultado = setor;
+
+      const url = setor
+        ? `${API_URL}?action=getDados&setor=${encodeURIComponent(setor)}`
+        : `${API_URL}?action=getDados`;
+
+      fetch(url, { redirect: 'follow', cache: 'no-store' })
+        .then(res => {
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          return res.json();
+        })
+        .then(data => {
+          // Se o usuário trocou enquanto a requisição estava em trânsito,
+          // descarta o resultado antigo e mantém somente o setor atual.
+          if (requestId !== dadosRequestId) return;
+
+          $('txtBipados').textContent = Number(data.bipados) || 0;
+          $('txtPendentes').textContent = Number(data.pendentes) || 0;
+          atualizarRotuloPendentes();
+          ocultarErroSync();
+        })
+        .catch(err => {
+          if (requestId !== dadosRequestId) return;
+          console.error('Erro ao carregar contadores:', err);
+          mostrarErroSync();
+        });
     }
-    // Atualiza os contadores na hora, sem esperar a próxima consulta ao servidor
-    function contarSeparado() {
-      const b = $('txtBipados'), p = $('txtPendentes');
+
+    // Atualização instantânea local após uma separação confirmada.
+    // A consulta do servidor continua sendo a fonte de verdade a cada 30s.
+    function contarSeparado(data, dadosOriginais) {
+      const setorTela = setorExpedicaoAtual();
+      const setorPacote = normalizarSetorTela((data && data.setor) || (dadosOriginais && dadosOriginais.setor) || '');
+
+      // Usuário de Expedição só altera o próprio contador.
+      // Escritório/TI continuam vendo o contador geral.
+      if (setorTela) {
+        const setorPacoteCanonico = setorPacote === 'expedicao 1' ? 'Expedição 1' : setorPacote === 'expedicao 2' ? 'Expedição 2' : '';
+        if (!setorPacoteCanonico || setorPacoteCanonico !== setorTela) {
+          carregarDados();
+          return;
+        }
+      }
+
+      const b = $('txtBipados');
+      const p = $('txtPendentes');
       b.textContent = (parseInt(b.textContent, 10) || 0) + 1;
       p.textContent = Math.max(0, (parseInt(p.textContent, 10) || 0) - 1);
     }
@@ -537,13 +645,15 @@
       }
       else {
         confirmados.set(code, Date.now());
-        contarSeparado();
+        contarSeparado(data, dados);
         atualizarLeitura(reg, code, 'ok', ((data.marketplace || '') + ' · ' + (data.produto || 'separado')).replace(/^ · /, ''), { marketplace: data.marketplace || '', produto: data.produto || '' });
         if (!veioDaFila) {
           emitirSom('sucesso'); vibrar(100);
           flashVisual('stageTwo', 'SEPARADO', 'GAIOLA CONFIRMADA' + (ultimo ? '' : ' · ' + code));
         }
         if (ultimo) $('lastScanSub').textContent = `${data.marketplace || ''} · ${data.produto || ''}`;
+        // Reconfirma o número filtrado no servidor sem bloquear o scanner.
+        setTimeout(carregarDados, 300);
       }
     }
 
