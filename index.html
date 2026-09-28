@@ -45,11 +45,45 @@
   .leitura.sem .st { color: #D8B48F; }
   .girando { display: inline-block; animation: gira 0.9s linear infinite; }
 
+  /* Faixa de conexão (fica discreta quando está tudo bem) */
+  .conexao { display: flex; align-items: center; justify-content: center; gap: 6px; font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #9C8A78; padding: 3px 8px; background: #1c1611; border-bottom: 1px solid #2a2019; }
+  .conexao .ponto { width: 7px; height: 7px; border-radius: 50%; background: #6FBF7F; }
+  .conexao.lento { color: #E5A93C; background: rgba(229,169,60,.08); }
+  .conexao.lento .ponto { background: #E5A93C; }
+  .conexao.off { color: #D9584B; background: rgba(217,88,75,.10); }
+  .conexao.off .ponto { background: #D9584B; }
+  .leitura.aguarda .st, .hist-item.aguarda .l2 { color: #E5A93C; }
+
   /* Abas Bipar / Histórico */
-  .abas-app { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; background: #1c1611; border: 1px solid #3a2c21; border-radius: 12px; padding: 4px; }
-  .aba-app { border: none; background: transparent; color: #9C8A78; font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700; padding: 9px 6px; border-radius: 9px; cursor: pointer; letter-spacing: .03em; }
+  .abas-app { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 4px; background: #1c1611; border: 1px solid #3a2c21; border-radius: 12px; padding: 4px; }
+  .aba-app { border: none; background: transparent; color: #9C8A78; font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; padding: 9px 4px; border-radius: 9px; cursor: pointer; letter-spacing: .02em; white-space: nowrap; }
   .aba-app.ativa { background: #B08662; color: #13100e; }
-  .aba-app .qtd { font-size: 10px; opacity: .85; margin-left: 4px; }
+  .aba-app .qtd { display: inline-block; font-size: 10px; margin-left: 4px; padding: 0 6px; border-radius: 99px; background: rgba(0,0,0,.25); }
+  .aba-app:not(.ativa) .qtd { background: #2a2019; color: #D8B48F; }
+  .aba-app .qtd:empty { display: none; }
+
+  /* Card de pendentes vira botão para a lista */
+  .card-pend { cursor: pointer; transition: border-color .15s; }
+  .card-pend:active { border-color: #E5A93C; }
+  .card-pend .ver { font-family: 'JetBrains Mono', monospace; font-size: 9px; color: #E5A93C; margin-top: 4px; display: block; }
+
+  /* Aba Pendentes */
+  .pend-topo { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+  .pend-titulo { font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: .03em; color: #F3EAE0; line-height: 1; }
+  .pend-sub { font-family: 'JetBrains Mono', monospace; font-size: 10.5px; color: #9C8A78; margin-top: 4px; }
+  .pend-item { padding: 10px 12px; border-bottom: 1px solid #2a2019; cursor: pointer; }
+  .pend-item:active { background: #241c16; }
+  .pend-item .l1 { display: flex; align-items: center; gap: 8px; }
+  .pend-item .mkt { font-family: 'JetBrains Mono', monospace; font-size: 9px; font-weight: 700; letter-spacing: .05em; padding: 2px 6px; border-radius: 5px; background: #241c16; color: #D8B48F; border: 1px solid #3a2c21; white-space: nowrap; }
+  .pend-item .mkt.shopee { color: #ff8a65; border-color: rgba(255,138,101,.35); }
+  .pend-item .mkt.meli { color: #ffe066; border-color: rgba(255,224,102,.35); }
+  .pend-item .mkt.amazon { color: #7cc4ff; border-color: rgba(124,196,255,.35); }
+  .pend-item .cod { font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 700; color: #F3EAE0; word-break: break-all; }
+  .pend-item .hora { margin-left: auto; font-family: 'JetBrains Mono', monospace; font-size: 10px; white-space: nowrap; color: #6FBF7F; }
+  .pend-item.aguard .hora { color: #E5A93C; }
+  .pend-item .l2 { font-size: 12px; color: #F3EAE0; margin-top: 4px; line-height: 1.35; }
+  .pend-item .l3 { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #9C8A78; margin-top: 3px; }
+  .pend-aviso { padding: 22px 16px; text-align: center; font-family: 'JetBrains Mono', monospace; font-size: 11.5px; color: #9C8A78; line-height: 1.5; }
 
   /* Histórico */
   .hist-busca { width: 100%; background: #241c16; border: 1px solid #3a2c21; border-radius: 10px; padding: 10px 12px; color: #F3EAE0; font-family: 'JetBrains Mono', monospace; font-size: 13px; outline: none; }
@@ -105,9 +139,10 @@
       <button onclick="sincronizarTudo()" class="p-2 rounded-lg bg-surface2 border border-line text-caramel text-xs font-mono font-bold">↻</button>
     </div>
   </header>
+  <div id="barraConexao" class="conexao"><span class="ponto"></span><span id="txtConexao">conectando…</span></div>
 
   <main class="flex-1 p-4 flex flex-col gap-4 overflow-y-auto max-w-md mx-auto w-full">
-    <div id="syncErrorBanner" class="hidden bg-danger/10 border border-danger/40 rounded-lg px-3 py-2 text-[10px] font-mono text-danger text-center">⚠️ Falha ao sincronizar com o servidor — verifique a conexão</div>
+    <div id="syncErrorBanner" class="hidden bg-warning/10 border border-warning/40 rounded-lg px-3 py-2 text-[10px] font-mono text-warning text-center">⚠️ Os números não atualizaram agora (servidor lento ou sem internet). Pode continuar bipando — as leituras são enviadas mesmo assim.</div>
     <div id="filaBadge" style="display:none" class="bg-warning/10 border border-warning/40 rounded-lg px-3 py-2 text-[10px] font-mono text-warning justify-between">
       <span>📴 <span id="filaCount">0</span> leitura(s) aguardando conexão</span>
       <span class="text-muted">reenviando sozinho...</span>
@@ -115,13 +150,14 @@
 
     <div class="abas-app" role="tablist">
       <button type="button" class="aba-app ativa" data-aba="bipar" onclick="mudarAba('bipar')">📷 BIPAR</button>
+      <button type="button" class="aba-app" data-aba="pendentes" onclick="mudarAba('pendentes')">📦 FALTAM<span class="qtd" id="qtdPendAba"></span></button>
       <button type="button" class="aba-app" data-aba="historico" onclick="mudarAba('historico')">📋 HISTÓRICO<span class="qtd" id="qtdHistHoje"></span></button>
     </div>
 
     <section id="telaBipar" class="flex flex-col gap-4">
     <div class="grid grid-cols-2 gap-3">
-      <div class="bg-surface border border-warning/30 rounded-xl p-3 flex items-center justify-between shadow-lg">
-        <div><span id="lblPendentes" class="text-[9px] font-mono text-warning uppercase font-bold block mb-1">Pendentes</span><span id="txtPendentes" class="font-display text-3xl text-warning leading-none">0</span></div>
+      <div class="card-pend bg-surface border border-warning/30 rounded-xl p-3 flex items-center justify-between shadow-lg" onclick="mudarAba('pendentes')" role="button" title="Ver a lista de pendentes">
+        <div><span id="lblPendentes" class="text-[9px] font-mono text-warning uppercase font-bold block mb-1">Pendentes</span><span id="txtPendentes" class="font-display text-3xl text-warning leading-none">0</span><span class="ver">ver lista ›</span></div>
         <span class="text-2xl opacity-80">📦</span>
       </div>
       <div class="bg-surface border border-success/30 rounded-xl p-3 flex items-center justify-between shadow-lg">
@@ -171,6 +207,25 @@
     </div>
     </section>
 
+    <section id="telaPendentes" class="flex flex-col gap-3" style="display:none">
+      <div class="pend-topo">
+        <div><div class="pend-titulo" id="pendTitulo">Faltam separar</div><div class="pend-sub" id="pendSub">—</div></div>
+        <button type="button" class="btn-hist" id="btnAtualizarPend" onclick="atualizarDoServidor(false)">↻ Atualizar</button>
+      </div>
+      <input type="search" id="pendBusca" class="hist-busca" placeholder="🔎 Buscar rastreio, pedido ou produto" autocomplete="off" oninput="agendarPendentes()">
+      <div class="chips" id="chipsPend">
+        <button type="button" class="chip ativo" data-f="prontos" onclick="filtroPendentes('prontos')">✅ Prontos p/ separar <b id="nProntos"></b></button>
+        <button type="button" class="chip" data-f="aguardando" onclick="filtroPendentes('aguardando')">🖨️ Aguardando escritório <b id="nAguard"></b></button>
+        <button type="button" class="chip" data-f="todos" onclick="filtroPendentes('todos')">Todos</button>
+      </div>
+      <div class="chips" id="chipsPendSetor" style="display:none">
+        <button type="button" class="chip ativo" data-s="" onclick="filtroPendSetor('')">Todas as expedições</button>
+        <button type="button" class="chip" data-s="Expedição 1" onclick="filtroPendSetor('Expedição 1')">Expedição 1</button>
+        <button type="button" class="chip" data-s="Expedição 2" onclick="filtroPendSetor('Expedição 2')">Expedição 2</button>
+      </div>
+      <div class="bg-surface border border-line rounded-xl shadow-md overflow-hidden" id="pendLista"><div class="pend-aviso">Carregando…</div></div>
+    </section>
+
     <section id="telaHistorico" class="flex flex-col gap-3" style="display:none">
       <input type="search" id="histBusca" class="hist-busca" placeholder="🔎 Buscar código, produto ou loja" autocomplete="off" oninput="agendarHistorico()">
       <div class="chips" id="chipsPeriodo">
@@ -206,26 +261,18 @@
     const FORMATOS_NATIVOS = ['code_128', 'qr_code', 'data_matrix', 'code_39', 'itf', 'ean_13', 'pdf417'];
     const FILA_KEY = 'dc_fila_offline';
     const CAM_KEY = 'dc_camera_id';
-    const MAX_ENVIOS_SIMULTANEOS = 3;       // leituras validando ao mesmo tempo no servidor
-    const TEMPO_LIMITE_ENVIO = 20000;       // 20 s sem resposta = guarda na fila e reenvia sozinho
+    const MAX_ENVIOS_SIMULTANEOS = 2;       // o servidor atende um bipe por vez (cadeado); mais que 2 só gera espera
+    const TEMPO_LIMITE_ENVIO = 45000;       // o servidor pode esperar até 30 s na fila do cadeado — antes cortávamos em 20 s
+                                            // e a leitura virava "sem conexão" mesmo tendo sido gravada
     const MESMA_ETIQUETA_MS = 4000;         // a mesma etiqueta parada na frente da câmera não é reenviada
 
     // =====================================================================
     //  ESTADO
     // =====================================================================
-    let listaUsuariosDB = [];
-    let usuarioAtual = { email: "", setor: "" };
-    let audioCtx = null;
-    let currentTrack = null;
-    let torchLigado = false;
-    let wakeLock = null;
-    let enviandoFila = false;
+    let listaUsuariosDB = []; let usuarioAtual = { email: "", setor: "" };
     let dadosRequestId = 0;
-    let ultimoSetorConsultado = "";
-    let stream = null;
-    let iniciandoCamera = false;
-    let geracaoLoop = 0;
-    let ultimoTickScanner = Date.now();
+    let audioCtx = null; let currentTrack = null; let torchLigado = false; let wakeLock = null; let enviandoFila = false;
+    let stream = null; let iniciandoCamera = false; let geracaoLoop = 0; let ultimoTickScanner = Date.now();
     let motor = ''; let detector = null; let worker = null; let workerOcupado = false; let workerEnviadoEm = 0; let leitorZXing = null;
     let lastScanCode = ""; let lastScanTime = 0; let ultimoAvisoPin = 0;
     const emAndamento = new Set();          // códigos validando agora
@@ -237,6 +284,7 @@
     //  HISTÓRICO (fica guardado neste celular)
     // =====================================================================
     const HIST_KEY = 'dc_historico_bipes';
+    function obterFilaInicial_() { try { return JSON.parse(localStorage.getItem(FILA_KEY)) || []; } catch (e) { return []; } }
     const HIST_MAX = 5000;                  // leituras guardadas no máximo
     const HIST_DIAS = 60;                   // e só dos últimos 60 dias
     let abaAtual = 'bipar';
@@ -251,6 +299,9 @@
       h = h.filter(x => x && x.codigo && x.ts > limite).slice(0, HIST_MAX);
       // Leitura que ficou "validando" quando o app foi fechado: não sabemos se chegou
       h.forEach(x => { if (x.estado === 'env') { x.estado = 'sem'; x.texto = 'sem confirmação — bipe de novo'; } });
+      // "aguardando servidor" que não está mais na fila de reenvio também fica sem confirmação
+      const naFila = new Set(obterFilaInicial_().map(f => f.codigo));
+      h.forEach(x => { if (x.estado === 'aguarda' && !naFila.has(x.codigo)) { x.estado = 'sem'; x.texto = 'sem confirmação — bipe de novo'; } });
       // Já confirmados hoje: o "JÁ BIPADO" continua instantâneo mesmo depois de recarregar
       const hoje = new Date().toDateString();
       h.forEach(x => { if ((x.estado === 'ok' || x.estado === 'dup') && new Date(x.ts).toDateString() === hoje && !confirmados.has(x.codigo)) confirmados.set(x.codigo, x.ts); });
@@ -310,7 +361,7 @@
     // =====================================================================
     window.onload = () => {
       $('inputPin').value = localStorage.getItem('dc_user_pin') || '';
-      atualizarRotuloPendentes();
+      restaurarInicioSalvo_();                 // abre na hora com o último estado deste celular
       desenharLeituras(); atualizarQtdHistorico();
       sincronizarTudo(); iniciarCamara(); ativarWakeLock();
       atualizarBadgeFila(); processarFila();
@@ -327,7 +378,7 @@
         ultimoTickScanner = Date.now();
       }
     });
-    window.addEventListener('online', processarFila);
+    window.addEventListener('online', () => { esperaFila = 3000; processarFila(); });
 
     async function ativarWakeLock() {
       try {
@@ -341,142 +392,286 @@
     // =====================================================================
     //  USUÁRIOS, PIN E CONTADORES
     // =====================================================================
+    // =====================================================================
+    //  CARREGAMENTO RÁPIDO
+    //  1) Abre na hora com o último estado guardado neste celular.
+    //  2) Atualiza tudo numa consulta só ao servidor (action=scannerInicio):
+    //     usuários + contadores + lista de pendentes do setor.
+    //  Se o Apps Script ainda não tiver essa ação, usa o jeito antigo
+    //  (getUsuarios + getDados), sem quebrar nada.
+    // =====================================================================
+    const INICIO_KEY = 'dc_scanner_inicio';
+    let pendentesLista = null;           // null = servidor ainda sem a lista
+    let pendentesAtualizadoEm = 0;
+    const SEM_INICIO_KEY = 'dc_servidor_sem_inicio';
+    let servidorTemInicio = !(Date.now() - Number(localStorage.getItem(SEM_INICIO_KEY) || 0) < 30 * 60000);
+    let assinaturaUsuarios = '';
+    let timerAtualizacao = null;
+
     function salvarPinLocal() { localStorage.setItem('dc_user_pin', $('inputPin').value); }
-    function sincronizarTudo() {
-      carregarUsuarios();
-    }
+    function sincronizarTudo() { atualizarDoServidor(false); }
+    function carregarDados() { atualizarDoServidor(false); }
+    // Depois de bipar, atualiza uma vez só quando a pessoa der uma pausa (não a cada bipe)
+    function agendarAtualizacao_(ms) { clearTimeout(timerAtualizacao); timerAtualizacao = setTimeout(() => atualizarDoServidor(false), ms); }
 
     function normalizarSetorTela(setor) {
-      return String(setor || '')
-        .trim()
-        .toLowerCase()
-        .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '');
+      return String(setor || '').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
     }
-
     function setorExpedicaoAtual() {
       const setor = normalizarSetorTela(usuarioAtual && usuarioAtual.setor);
       if (setor === 'expedicao 1') return 'Expedição 1';
       if (setor === 'expedicao 2') return 'Expedição 2';
       return ''; // Escritório/TI veem o total geral.
     }
-
     function atualizarRotuloPendentes() {
       const setor = setorExpedicaoAtual();
-      $('lblPendentes').textContent = setor
-        ? `Pendentes · ${setor.replace('Expedição ', 'EXP ')}`
-        : 'Pendentes';
+      $('lblPendentes').textContent = setor ? `Pendentes · ${setor.replace('Expedição ', 'EXP ')}` : 'Pendentes';
+      $('qtdPendAba').textContent = $('txtPendentes').textContent !== '0' ? $('txtPendentes').textContent : '';
     }
 
-    function carregarUsuarios() {
-      fetch(`${API_URL}?action=getUsuarios`, { redirect: 'follow', cache: 'no-store' })
-        .then(res => {
-          if (!res.ok) throw new Error(`HTTP ${res.status}`);
-          return res.json();
-        })
-        .then(usuarios => {
-          listaUsuariosDB = Array.isArray(usuarios) ? usuarios : [];
-          const select = $('selectUsuario');
-          select.innerHTML = '';
+    function salvarInicio_(parcial) {
+      let c = {};
+      try { c = JSON.parse(localStorage.getItem(INICIO_KEY)) || {}; } catch (e) {}
+      try { localStorage.setItem(INICIO_KEY, JSON.stringify(Object.assign(c, parcial))); } catch (e) {}
+    }
 
-          if (!listaUsuariosDB.length) {
-            usuarioAtual = { email: '', setor: '' };
-            atualizarRotuloPendentes();
-            carregarDados();
-            return;
-          }
+    function aplicarUsuarios(usuarios) {
+      const lista = Array.isArray(usuarios) ? usuarios : [];
+      const assinatura = JSON.stringify(lista);
+      if (assinatura === assinaturaUsuarios) return;   // nada mudou: não mexe no seletor
+      assinaturaUsuarios = assinatura;
+      listaUsuariosDB = lista;
+      const select = $('selectUsuario');
+      const atual = select.value || localStorage.getItem('dc_user_email') || '';
+      select.innerHTML = lista.length
+        ? lista.map(u => `<option value="${escH(u.email || '')}">${escH(String(u.email || '').split('@')[0])}</option>`).join('')
+        : '<option value="">Sem usuários</option>';
+      if (atual && lista.some(u => u.email === atual)) select.value = atual;
+      definirUsuario_(select.value || '');
+    }
 
-          listaUsuariosDB.forEach(u => {
-            const opt = document.createElement('option');
-            opt.value = u.email || '';
-            opt.textContent = String(u.email || '').split('@')[0];
-            select.appendChild(opt);
-          });
+    function definirUsuario_(email) {
+      localStorage.setItem('dc_user_email', email);
+      const u = listaUsuariosDB.find(x => x.email === email);
+      usuarioAtual = u ? { email: u.email || '', setor: u.setor || '' } : { email, setor: 'Expedição 1' };
+      atualizarRotuloPendentes();
+    }
 
-          const savedEmail = localStorage.getItem('dc_user_email');
-          if (savedEmail && listaUsuariosDB.some(u => u.email === savedEmail)) {
-            select.value = savedEmail;
-          }
+    function alterarUsuarioSelecionado() {
+      const setorAntes = setorExpedicaoAtual();
+      definirUsuario_($('selectUsuario').value || '');
+      if (abaAtual === 'historico') desenharHistorico();
+      if (setorExpedicaoAtual() !== setorAntes) {
+        pendentesLista = null; $('txtPendentes').textContent = '…';
+        restaurarInicioSalvo_(true);
+        atualizarDoServidor(false);
+      } else if (abaAtual === 'pendentes') desenharPendentes();
+    }
 
-          alterarUsuarioSelecionado(false);
+    // Mostra na hora o último estado guardado (só se for do mesmo setor)
+    function restaurarInicioSalvo_(soEstado) {
+      let c = null;
+      try { c = JSON.parse(localStorage.getItem(INICIO_KEY)); } catch (e) {}
+      if (!c) { $('txtPendentes').textContent = '…'; $('txtBipados').textContent = '…'; return; }
+      if (!soEstado && c.usuarios) aplicarUsuarios(c.usuarios);
+      if ((c.setor || '') === setorExpedicaoAtual() && c.bipados !== undefined) aplicarEstado_(c);
+    }
+
+    function aplicarEstado_(d) {
+      $('txtBipados').textContent = Number(d.bipados) || 0;
+      if (Array.isArray(d.lista)) {
+        pendentesLista = d.lista.slice();
+        pendentesAtualizadoEm = d.ts || Date.now();
+        tirarDaListaOsJaSeparados_();
+        $('txtPendentes').textContent = pendentesLista.length;
+      } else {
+        $('txtPendentes').textContent = Number(d.pendentes) || 0;
+      }
+      atualizarRotuloPendentes();
+      if (abaAtual === 'pendentes') desenharPendentes();
+    }
+
+    function atualizarDoServidor(repetindo) {
+      if (!navigator.onLine) { marcarConexao_('offline'); return; }
+      if (!servidorTemInicio) { if (listaUsuariosDB.length) carregarDadosAntigo_(); else carregarUsuariosAntigo_(); return; }
+      const setor = setorExpedicaoAtual();
+      const req = ++dadosRequestId;
+      const btn = $('btnAtualizarPend'); if (btn) btn.textContent = '⏳';
+      const email = usuarioAtual.email || localStorage.getItem('dc_user_email') || '';
+      fetch(`${API_URL}?action=scannerInicio&setor=${encodeURIComponent(setor)}&email=${encodeURIComponent(email)}`, { redirect: 'follow', cache: 'no-store' })
+        .then(res => { if (!res.ok) throw new Error('HTTP ' + res.status); return res.json(); })   // HTML no lugar de JSON = servidor sem a ação nova
+        .then(d => {
+          if (!d || !d.ok) throw new SyntaxError('sem scannerInicio');
+          if (d.usuarios) aplicarUsuarios(d.usuarios);
+          if (req !== dadosRequestId) return;
+          // O usuário salvo era de outro setor: pede de novo já com o setor certo
+          if (!repetindo && (d.setor || '') !== setorExpedicaoAtual()) { atualizarDoServidor(true); return; }
+          d.ts = Date.now();
+          if (!$('barraConexao').className.includes('lento')) marcarConexao_('ok');
+          aplicarEstado_(d);
+          localStorage.removeItem(SEM_INICIO_KEY);
+          salvarInicio_({ usuarios: d.usuarios, setor: d.setor || '', bipados: d.bipados, pendentes: d.pendentes, lista: d.lista, ts: d.ts });
           ocultarErroSync();
         })
         .catch(err => {
-          console.error('Erro ao carregar usuários:', err);
+          if (req !== dadosRequestId) return;
+          if (err instanceof SyntaxError) {
+            servidorTemInicio = false; localStorage.setItem(SEM_INICIO_KEY, String(Date.now()));
+            carregarUsuariosAntigo_(); return;
+          }
+          console.error('Erro ao atualizar:', err);
           mostrarErroSync();
-        });
+        })
+        .finally(() => { if (req === dadosRequestId && btn) btn.textContent = '↻ Atualizar'; });
     }
 
-    function alterarUsuarioSelecionado(carregar = true) {
-      const select = $('selectUsuario');
-      const email = select.value || '';
-      localStorage.setItem('dc_user_email', email);
-
-      const uFound = listaUsuariosDB.find(u => u.email === email);
-      usuarioAtual = uFound
-        ? { email: uFound.email || '', setor: uFound.setor || '' }
-        : { email, setor: 'Expedição 1' };
-
-      atualizarRotuloPendentes();
-
-      if (abaAtual === 'historico') desenharHistorico();
-      if (carregar) carregarDados();
+    // ----- jeito antigo (enquanto o Apps Script não tiver a action=scannerInicio) -----
+    function carregarUsuariosAntigo_() {
+      fetch(`${API_URL}?action=getUsuarios`, { redirect: 'follow', cache: 'no-store' })
+        .then(res => { if (!res.ok) throw new Error(`HTTP ${res.status}`); return res.json(); })
+        .then(usuarios => { aplicarUsuarios(usuarios); salvarInicio_({ usuarios }); ocultarErroSync(); carregarDadosAntigo_(); })
+        .catch(err => { console.error('Erro ao carregar usuários:', err); mostrarErroSync(); });
     }
-
-    function carregarDados() {
+    function carregarDadosAntigo_() {
       const setor = setorExpedicaoAtual();
       const requestId = ++dadosRequestId;
-      ultimoSetorConsultado = setor;
-
-      const url = setor
-        ? `${API_URL}?action=getDados&setor=${encodeURIComponent(setor)}`
-        : `${API_URL}?action=getDados`;
-
+      const url = setor ? `${API_URL}?action=getDados&setor=${encodeURIComponent(setor)}` : `${API_URL}?action=getDados`;
       fetch(url, { redirect: 'follow', cache: 'no-store' })
-        .then(res => {
-          if (!res.ok) throw new Error(`HTTP ${res.status}`);
-          return res.json();
-        })
+        .then(res => { if (!res.ok) throw new Error(`HTTP ${res.status}`); return res.json(); })
         .then(data => {
-          // Se o usuário trocou enquanto a requisição estava em trânsito,
-          // descarta o resultado antigo e mantém somente o setor atual.
           if (requestId !== dadosRequestId) return;
-
           $('txtBipados').textContent = Number(data.bipados) || 0;
           $('txtPendentes').textContent = Number(data.pendentes) || 0;
+          salvarInicio_({ setor, bipados: Number(data.bipados) || 0, pendentes: Number(data.pendentes) || 0, lista: null, ts: Date.now() });
           atualizarRotuloPendentes();
+          if (abaAtual === 'pendentes') desenharPendentes();
           ocultarErroSync();
         })
-        .catch(err => {
-          if (requestId !== dadosRequestId) return;
-          console.error('Erro ao carregar contadores:', err);
-          mostrarErroSync();
-        });
+        .catch(err => { if (requestId !== dadosRequestId) return; console.error('Erro ao carregar contadores:', err); mostrarErroSync(); });
     }
 
-    // Atualização instantânea local após uma separação confirmada.
-    // A consulta do servidor continua sendo a fonte de verdade a cada 30s.
+    // Separado com sucesso (ou já estava): sai da lista e os contadores mudam na hora
+    const normCod_ = v => String(v || '').replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
+    function mesmoPacote_(item, codigo) {
+      const c = normCod_(codigo);
+      if (!c) return false;
+      return [item.codigo, item.pedido].map(normCod_).some(x => x && (x === c || (x.length >= 8 && c.length >= 8 && (x.includes(c) || c.includes(x)))));
+    }
+    function tirarDaListaOsJaSeparados_() {
+      if (!pendentesLista || !confirmados.size) return;
+      const codigos = Array.from(confirmados.keys());
+      pendentesLista = pendentesLista.filter(item => !codigos.some(c => mesmoPacote_(item, c)));
+    }
     function contarSeparado(data, dadosOriginais) {
-      const setorTela = setorExpedicaoAtual();
-      const setorPacote = normalizarSetorTela((data && data.setor) || (dadosOriginais && dadosOriginais.setor) || '');
-
-      // Usuário de Expedição só altera o próprio contador.
-      // Escritório/TI continuam vendo o contador geral.
-      if (setorTela) {
-        const setorPacoteCanonico = setorPacote === 'expedicao 1' ? 'Expedição 1' : setorPacote === 'expedicao 2' ? 'Expedição 2' : '';
-        if (!setorPacoteCanonico || setorPacoteCanonico !== setorTela) {
-          carregarDados();
-          return;
-        }
+      // Se os números ainda não chegaram do servidor ("…"), não inventa: a próxima atualização traz o certo
+      const nBip = parseInt($('txtBipados').textContent, 10);
+      if (!isNaN(nBip)) $('txtBipados').textContent = nBip + 1;
+      if (pendentesLista) {
+        pendentesLista = pendentesLista.filter(item => !mesmoPacote_(item, dadosOriginais.codigo));
+        $('txtPendentes').textContent = pendentesLista.length;
+      } else {
+        const nPend = parseInt($('txtPendentes').textContent, 10);
+        if (!isNaN(nPend)) $('txtPendentes').textContent = Math.max(0, nPend - 1);
       }
-
-      const b = $('txtBipados');
-      const p = $('txtPendentes');
-      b.textContent = (parseInt(b.textContent, 10) || 0) + 1;
-      p.textContent = Math.max(0, (parseInt(p.textContent, 10) || 0) - 1);
+      atualizarRotuloPendentes();
+      if (abaAtual === 'pendentes') desenharPendentes();
     }
-    function mostrarErroSync() { $('syncErrorBanner').classList.remove('hidden'); }
-    function ocultarErroSync() { $('syncErrorBanner').classList.add('hidden'); }
+    function tirarDaLista_(codigo) {
+      if (!pendentesLista) return;
+      const antes = pendentesLista.length;
+      pendentesLista = pendentesLista.filter(item => !mesmoPacote_(item, codigo));
+      if (pendentesLista.length !== antes) { $('txtPendentes').textContent = pendentesLista.length; atualizarRotuloPendentes(); }
+    }
+
+    // =====================================================================
+    //  ABA "FALTAM" — pacotes que faltam separar
+    // =====================================================================
+    let filtroPend = 'prontos';
+    let filtroSetorPend = '';
+    let pendAberto = null;
+    let timerBuscaPend = null;
+    function agendarPendentes() { clearTimeout(timerBuscaPend); timerBuscaPend = setTimeout(desenharPendentes, 150); }
+    function filtroPendentes(f) {
+      filtroPend = f;
+      document.querySelectorAll('#chipsPend .chip').forEach(c => c.classList.toggle('ativo', c.dataset.f === f));
+      desenharPendentes();
+    }
+    function filtroPendSetor(s) {
+      filtroSetorPend = s;
+      document.querySelectorAll('#chipsPendSetor .chip').forEach(c => c.classList.toggle('ativo', c.dataset.s === s));
+      desenharPendentes();
+    }
+    const classeMkt_ = m => { const t = semAcento(m); return t.includes('shopee') ? 'shopee' : (t.includes('mercado') || t.includes('meli')) ? 'meli' : t.includes('amazon') ? 'amazon' : ''; };
+
+    function desenharPendentes() {
+      const setor = setorExpedicaoAtual();
+      $('chipsPendSetor').style.display = setor ? 'none' : 'flex';
+      $('pendTitulo').textContent = 'Faltam separar';
+      if (!pendentesLista) {
+        $('pendSub').textContent = 'Total: ' + $('txtPendentes').textContent + ' pendente(s)';
+        $('nProntos').textContent = ''; $('nAguard').textContent = '';
+        $('pendLista').innerHTML = `<div class="pend-aviso">${servidorTemInicio ? 'Carregando a lista…' : 'Para ver a lista, falta atualizar o Apps Script da Expedição (arquivo <b>ScannerCelular</b>). Os números continuam funcionando.'}</div>`;
+        return;
+      }
+      const base = setor || !filtroSetorPend ? pendentesLista : pendentesLista.filter(p => p.setor === filtroSetorPend);
+      const prontos = base.filter(p => p.impresso).length;
+      $('nProntos').textContent = prontos;
+      $('nAguard').textContent = base.length - prontos;
+      const hora = pendentesAtualizadoEm ? new Date(pendentesAtualizadoEm).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : '—';
+      $('pendSub').textContent = `${setor || filtroSetorPend || 'Todas as expedições'} · ${base.length} pendente(s) · ${prontos} pronto(s) · atualizado às ${hora}`;
+
+      const termo = semAcento($('pendBusca').value.trim());
+      const lista = base.filter(p =>
+        (filtroPend === 'todos' || (filtroPend === 'prontos' ? p.impresso : !p.impresso)) &&
+        (!termo || semAcento([p.codigo, p.pedido, p.produto, p.marketplace].join(' ')).includes(termo)));
+      if (!lista.length) {
+        $('pendLista').innerHTML = `<div class="pend-aviso">${base.length ? 'Nada neste filtro.' : '🎉 Nada pendente agora.'}</div>`;
+        return;
+      }
+      $('pendLista').innerHTML = lista.slice(0, 400).map(p => {
+        const quando = p.impresso ? ('impresso ' + (p.impressoEm || '')).trim() : 'aguardando escritório';
+        const aberto = pendAberto === p.codigo;
+        return `<div class="pend-item ${p.impresso ? 'pronto' : 'aguard'}" data-cod="${escH(p.codigo)}">
+          <div class="l1"><span class="mkt ${classeMkt_(p.marketplace)}">${escH((p.marketplace || '—').toUpperCase())}</span><span class="cod">${escH(p.codigo)}</span><span class="hora">${escH(quando)}</span></div>
+          <div class="l2">${escH(p.produto || '—')}</div>
+          <div class="l3">Pedido ${escH(p.pedido || '—')}${!setor && p.setor ? ' · ' + escH(p.setor) : ''}${p.data ? ' · ' + escH(p.data) : ''}</div>
+          ${aberto ? `<div class="hist-det" style="padding-left:0;"><button type="button" class="btn-hist" data-acao="copiar" data-cod="${escH(p.codigo)}">📋 Copiar código</button></div>` : ''}
+        </div>`;
+      }).join('') + (lista.length > 400 ? `<div class="pend-aviso">Mostrando 400 de ${lista.length}. Use a busca para achar os outros.</div>` : '');
+    }
+
+    document.addEventListener('click', ev => {
+      const btn = ev.target.closest('#pendLista [data-acao="copiar"]');
+      if (btn) {
+        ev.stopPropagation();
+        const cod = btn.dataset.cod;
+        const ok = () => { btn.textContent = '✓ Copiado'; setTimeout(() => { btn.textContent = '📋 Copiar código'; }, 1500); };
+        if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(cod).then(ok).catch(() => {});
+        return;
+      }
+      const item = ev.target.closest('#pendLista .pend-item');
+      if (item) { pendAberto = pendAberto === item.dataset.cod ? null : item.dataset.cod; desenharPendentes(); }
+    });
+
+    let falhasSync = 0;
+    function mostrarErroSync() { if (++falhasSync >= 2) $('syncErrorBanner').classList.remove('hidden'); }
+    function ocultarErroSync() { falhasSync = 0; $('syncErrorBanner').classList.add('hidden'); }
+
+    // =====================================================================
+    //  ESTADO DA CONEXÃO (faixa fininha abaixo do topo)
+    // =====================================================================
+    let ultimaLatencia = 0;
+    function marcarConexao_(tipo) {
+      const barra = $('barraConexao'), txt = $('txtConexao');
+      if (!navigator.onLine) tipo = 'offline';
+      barra.className = 'conexao' + (tipo === 'offline' ? ' off' : (tipo === 'lento' || tipo === 'rede') ? ' lento' : '');
+      txt.textContent = tipo === 'offline' ? 'sem internet no celular — as leituras ficam guardadas'
+        : tipo === 'lento' ? 'servidor demorando — as leituras continuam sendo enviadas'
+        : tipo === 'rede' ? 'conexão instável — tentando de novo'
+        : 'online' + (ultimaLatencia ? ' · resposta em ' + (ultimaLatencia / 1000).toFixed(1).replace('.', ',') + ' s' : '');
+    }
+    window.addEventListener('offline', () => marcarConexao_('offline'));
+    window.addEventListener('online', () => marcarConexao_('ok'));
 
     // =====================================================================
     //  FILA OFFLINE (igual à anterior)
@@ -490,29 +685,48 @@
       else badge.style.display = 'none';
     }
 
+    // Tipo da falha: 'offline' (celular sem internet), 'lento' (servidor não respondeu a tempo),
+    // 'rede' (a conexão caiu no meio). Nos três casos a leitura é guardada e reenviada sozinha.
     function enviarBipe(item, limiteMs) {
       const ctrl = window.AbortController ? new AbortController() : null;
       const timer = ctrl && limiteMs ? setTimeout(() => ctrl.abort(), limiteMs) : null;
+      const inicio = Date.now();
       return fetch(API_URL, {
         method: 'POST', redirect: 'follow', signal: ctrl ? ctrl.signal : undefined,
         body: JSON.stringify({ codigo: item.codigo, email: item.email, setor: item.setor, pin: item.pin })
-      }).then(res => res.json()).finally(() => { if (timer) clearTimeout(timer); });
+      })
+        .then(res => { if (!res.ok) throw Object.assign(new Error('HTTP ' + res.status), { tipo: 'lento' }); return res.json(); })
+        .then(data => { ultimaLatencia = Date.now() - inicio; marcarConexao_(ultimaLatencia > 12000 ? 'lento' : 'ok'); return data; })
+        .catch(e => {
+          const tipo = !navigator.onLine ? 'offline'
+            : (e && e.name === 'AbortError') ? 'lento'
+            : (e && e.name === 'SyntaxError') ? 'lento'      // o Google devolveu uma página de erro no lugar da resposta
+            : (e && e.tipo) || 'rede';
+          marcarConexao_(tipo);
+          throw Object.assign(e instanceof Error ? e : new Error(String(e)), { tipo });
+        })
+        .finally(() => { if (timer) clearTimeout(timer); });
     }
 
+    // Reenvio da fila: tenta de novo com intervalo crescente (3 s, 6 s, 12 s… até 1 min)
+    let esperaFila = 3000, timerFila = null;
+    function agendarFila_(ms) { clearTimeout(timerFila); timerFila = setTimeout(processarFila, ms); }
     function processarFila() {
       const fila = obterFila();
-      if (fila.length === 0 || enviandoFila || !navigator.onLine) return;
+      if (fila.length === 0 || enviandoFila) return;
+      if (!navigator.onLine) { agendarFila_(5000); return; }
       enviandoFila = true;
       const item = fila[0];
       enviarBipe(item, TEMPO_LIMITE_ENVIO)
         .then(data => {
-          const atual = obterFila(); atual.shift(); salvarFila(atual);
-          const reg = historico.find(l => l.codigo === item.codigo && l.estado === 'off');
-          tratarResposta(data, item, reg, true);
+          const atual = obterFila().filter(f => !(f.codigo === item.codigo && f.ts === item.ts)); salvarFila(atual);
+          const reg = historico.find(l => l.codigo === item.codigo && (l.estado === 'off' || l.estado === 'aguarda'));
           enviandoFila = false;
-          if (atual.length > 0) processarFila(); else carregarDados();
+          esperaFila = 3000;
+          tratarResposta(data, Object.assign({}, item, { reenvio: true }), reg, true);
+          if (atual.length > 0) agendarFila_(300); else carregarDados();
         })
-        .catch(() => { enviandoFila = false; });
+        .catch(() => { enviandoFila = false; esperaFila = Math.min(esperaFila * 2, 60000); agendarFila_(esperaFila); });
     }
 
     // =====================================================================
@@ -537,6 +751,7 @@
 
     // Quando a etiqueta tem mais de um código (QR + barras), escolhe o mesmo que o leitor antigo escolheria:
     // primeiro o que tem cara de rastreio (BR…, TBA…, MLB…, chave de NF), depois código de barras, depois QR.
+    let leituraBruta = null;
     function escolherLeitura(lista) {
       let melhor = null, nota = -1;
       lista.forEach(l => {
@@ -545,7 +760,7 @@
         let n = 0;
         if (/BR[A-Z0-9]{8,20}|(AMZC?|TBA|AZ)[A-Z0-9]{8,20}|(MEL|MLB)[A-Z0-9]{8,20}/i.test(s) || s.replace(/\D/g, '').length === 44) n += 10;
         if (!/qr|data_matrix|pdf|QR_CODE|DATA_MATRIX|PDF_417/i.test(l.formato || '')) n += 5;
-        if (n > nota) { nota = n; melhor = s; }
+        if (n > nota) { nota = n; melhor = s; leituraBruta = { texto: s.slice(0, 160), formato: String(l.formato || '') }; }
       });
       return melhor;
     }
@@ -594,6 +809,10 @@
       $('lastScanBox').textContent = code;
       $('lastScanSub').textContent = "Lido — validando no servidor... pode bipar o próximo.";
       const reg = registrarLeitura(code, 'env', 'validando');
+      if (leituraBruta && leituraBruta.texto && extrairCodigoLogistico(leituraBruta.texto) === code && leituraBruta.texto !== code) {
+        reg.bruto = leituraBruta.texto; reg.formato = leituraBruta.formato;
+      }
+      leituraBruta = null;
       filaEnvio.push({ dados: { codigo: code, email: usuarioAtual.email, setor: usuarioAtual.setor, pin: pin, ts: agora }, reg: reg });
       bombearEnvios();
     }
@@ -604,7 +823,14 @@
         enviosAtivos++; emAndamento.add(dados.codigo);
         enviarBipe(dados, TEMPO_LIMITE_ENVIO)
           .then(data => tratarResposta(data, dados, reg, false))
-          .catch(() => tratarFalhaRede(dados, reg))
+          .catch(e => {
+            if (e.tipo === 'rede' && !dados.tentouDeNovo) {       // a rede piscou: tenta mais uma vez em 1,5 s
+              dados.tentouDeNovo = true; dados.reenvio = true;
+              setTimeout(() => { filaEnvio.unshift({ dados, reg }); bombearEnvios(); }, 1500);
+              return;
+            }
+            tratarFalhaRede(dados, reg, e.tipo);
+          })
           .finally(() => { enviosAtivos--; emAndamento.delete(dados.codigo); atualizarEnviando(); bombearEnvios(); });
       }
       atualizarEnviando();
@@ -621,8 +847,29 @@
       const msgTexto = (data.msg || "").toLowerCase();
       const ultimo = code === lastScanCode;
 
+      // Servidor ocupado ou Bling sendo atualizado: não é erro do pacote — guarda e reenvia sozinho
+      if (data.status === 'tentar_depois' || /lock|bloqueio|timed out|tempo limite|too many|muitas/i.test(data.msg || '') && (data.status || '').includes('erro')) {
+        const item = Object.assign({}, dados, { reenvio: true });
+        if (!obterFila().some(f => f.codigo === item.codigo)) adicionarNaFila(item);
+        atualizarLeitura(reg, code, 'aguarda', 'aguardando servidor — reenvia sozinho', { msg: data.msg || '' });
+        if (!veioDaFila) { emitirSom('aviso'); vibrar([80, 40, 80]); flashVisual('warning', 'AGUARDE', 'LEITURA GUARDADA — ' + (data.msg || 'SERVIDOR OCUPADO').toUpperCase()); }
+        if (ultimo) $('lastScanSub').textContent = '⏳ ' + (data.msg || 'Servidor ocupado.') + ' A leitura está guardada.';
+        agendarFila_(15000);
+        return;
+      }
+
+      // Reenvio que volta "já separado": quase sempre é porque a 1ª tentativa chegou lá e a resposta se perdeu
+      if (dados.reenvio && (data.status === "duplicado" || data.status === "ja_separado") && !/impress/i.test(msgTexto)) {
+        confirmados.set(code, Date.now());
+        contarSeparado(data, dados);
+        atualizarLeitura(reg, code, 'ok', 'separado ✓ (confirmado no reenvio)', { msg: data.msg || '', marketplace: data.marketplace || '', produto: data.produto || '' });
+        if (ultimo) $('lastScanSub').textContent = '✅ Confirmado no reenvio.';
+        return;
+      }
+
       if (data.status === "duplicado" || data.status === "ja_separado" || msgTexto.includes("já foi") || msgTexto.includes("ja foi")) {
         confirmados.set(code, Date.now());
+        tirarDaLista_(code);
         let subTitulo = "ESTE PACOTE JÁ FOI BIPADO";
         if (msgTexto.includes("impress")) subTitulo = "JÁ IMPRESSO PELO ESCRITÓRIO";
         else if (msgTexto.includes("separad")) subTitulo = "JÁ SEPARADO NA GAIOLA";
@@ -637,6 +884,7 @@
         let tituloErro = "ATENÇÃO";
         if (msgTexto.includes("pin")) tituloErro = "PIN INCORRETO";
         else if (msgTexto.includes("não imprimiu") || msgTexto.includes("bipe 1")) tituloErro = "FALTA BIPE 1";
+        else if (msgTexto.includes("não encontrado") || msgTexto.includes("nao encontrado")) tituloErro = "NÃO ENCONTRADO";
         atualizarLeitura(reg, code, 'erro', tituloErro.toLowerCase() + (data.msg ? ' — ' + data.msg : ''), { msg: data.msg || '' });
         emitirSom('erro'); vibrar([300, 100, 300]);
         flashVisual('error', tituloErro, code + ' · ' + (data.msg || 'Ação necessária'));
@@ -646,23 +894,30 @@
       else {
         confirmados.set(code, Date.now());
         contarSeparado(data, dados);
+        agendarAtualizacao_(8000);            // confere com o servidor quando a pessoa der uma pausa
         atualizarLeitura(reg, code, 'ok', ((data.marketplace || '') + ' · ' + (data.produto || 'separado')).replace(/^ · /, ''), { marketplace: data.marketplace || '', produto: data.produto || '' });
         if (!veioDaFila) {
           emitirSom('sucesso'); vibrar(100);
           flashVisual('stageTwo', 'SEPARADO', 'GAIOLA CONFIRMADA' + (ultimo ? '' : ' · ' + code));
         }
         if (ultimo) $('lastScanSub').textContent = `${data.marketplace || ''} · ${data.produto || ''}`;
-        // Reconfirma o número filtrado no servidor sem bloquear o scanner.
-        setTimeout(carregarDados, 300);
       }
     }
 
-    function tratarFalhaRede(dados, reg) {
-      adicionarNaFila(dados);
-      atualizarLeitura(reg, dados.codigo, 'off', 'sem conexão — na fila');
-      emitirSom('aviso'); vibrar([150, 80, 150]);
-      flashVisual('warning', 'SEM CONEXÃO', 'SALVO — SERÁ ENVIADO SOZINHO');
-      if (dados.codigo === lastScanCode) $('lastScanSub').textContent = "📴 Sem internet agora. Leitura guardada, será reenviada automaticamente.";
+    function tratarFalhaRede(dados, reg, tipo) {
+      adicionarNaFila(Object.assign({}, dados, { reenvio: true }));
+      agendarFila_(tipo === 'offline' ? 5000 : 4000);
+      if (tipo === 'offline') {
+        atualizarLeitura(reg, dados.codigo, 'off', 'sem internet — guardado, envia sozinho');
+        emitirSom('aviso'); vibrar([150, 80, 150]);
+        flashVisual('warning', 'SEM INTERNET', 'LEITURA GUARDADA — ENVIA QUANDO VOLTAR');
+        if (dados.codigo === lastScanCode) $('lastScanSub').textContent = "📴 O celular está sem internet. A leitura está guardada e vai sozinha.";
+      } else {
+        // Servidor lento / rede instável: não assusta com tela cheia — a leitura já está guardada
+        atualizarLeitura(reg, dados.codigo, 'aguarda', tipo === 'lento' ? 'servidor lento — reenviando sozinho' : 'conexão instável — reenviando sozinho');
+        emitirSom('aviso'); vibrar(60);
+        if (dados.codigo === lastScanCode) $('lastScanSub').textContent = "⏳ O servidor demorou. A leitura está guardada e será reenviada sozinha — pode continuar.";
+      }
     }
 
     // ---------- lista "Últimas leituras" (as 8 mais recentes do histórico) ----------
@@ -677,7 +932,7 @@
       return reg;
     }
     function atualizarLeitura(reg, codigo, estado, texto, extra) {
-      if (!reg) reg = historico.find(l => l.codigo === codigo && (l.estado === 'env' || l.estado === 'off'));
+      if (!reg) reg = historico.find(l => l.codigo === codigo && (l.estado === 'env' || l.estado === 'off' || l.estado === 'aguarda'));
       if (!reg) reg = registrarLeitura(codigo, estado, texto);
       reg.estado = estado; reg.texto = texto;
       if (extra) Object.assign(reg, extra);
@@ -685,7 +940,7 @@
       desenharLeituras();
       if (abaAtual === 'historico') desenharHistorico();
     }
-    const ICONE_ESTADO = { env: '<span class="girando">⏳</span>', ok: '✅', dup: '⚠️', erro: '❌', off: '📴', sem: '❔' };
+    const ICONE_ESTADO = { env: '<span class="girando">⏳</span>', ok: '✅', dup: '⚠️', erro: '❌', off: '📴', sem: '❔', aguarda: '⏳' };
     const escH = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
     function desenharLeituras() {
       const ult = historico.slice(0, 8);
@@ -701,15 +956,17 @@
     function mudarAba(aba) {
       abaAtual = aba;
       $('telaBipar').style.display = aba === 'bipar' ? '' : 'none';
+      $('telaPendentes').style.display = aba === 'pendentes' ? '' : 'none';
       $('telaHistorico').style.display = aba === 'historico' ? '' : 'none';
       document.querySelectorAll('.aba-app').forEach(b => b.classList.toggle('ativa', b.dataset.aba === aba));
       ultimoTickScanner = Date.now();
       if (aba === 'historico') { histLimite = 200; desenharHistorico(); }
+      if (aba === 'pendentes') { desenharPendentes(); if (Date.now() - pendentesAtualizadoEm > 20000) atualizarDoServidor(false); }
     }
     function atualizarQtdHistorico() {
       const hoje = new Date().toDateString();
       const n = historico.filter(x => new Date(x.ts).toDateString() === hoje).length;
-      $('qtdHistHoje').textContent = n ? '· ' + n + ' hoje' : '';
+      $('qtdHistHoje').textContent = n ? n : '';
     }
     function filtroHist(tipo, valor) {
       filtrosHist[tipo] = valor; histLimite = 200;
@@ -731,7 +988,7 @@
       return historico.filter(x =>
         x.ts >= desde &&
         (!soMeus || !x.usuario || x.usuario === usuarioAtual.email) &&
-        (est === 'todos' || x.estado === est || (est === 'erro' && x.estado === 'sem') || (est === 'off' && x.estado === 'env')) &&
+        (est === 'todos' || x.estado === est || (est === 'erro' && x.estado === 'sem') || (est === 'off' && (x.estado === 'env' || x.estado === 'aguarda'))) &&
         (!termo || semAcento(x.codigo + ' ' + x.produto + ' ' + x.marketplace + ' ' + x.texto).includes(termo))
       );
     }
@@ -769,6 +1026,7 @@
           <div class="l2">${escH(detalhe)}</div>
           ${aberto ? `<div class="hist-det">
               ${x.msg ? `<div class="msg">${escH(x.msg)}</div>` : ''}
+              ${x.bruto ? `<div class="msg" style="color:#9C8A78;">Lido pela câmera${x.formato ? ' (' + escH(x.formato) + ')' : ''}: ${escH(x.bruto)}</div>` : ''}
               <button type="button" class="btn-hist" data-acao="copiar" data-cod="${escH(x.codigo)}">📋 Copiar código</button>
               ${podeReenviar ? `<button type="button" class="btn-hist" data-acao="reenviar" data-cod="${escH(x.codigo)}">↻ Bipar de novo</button>` : ''}
             </div>` : ''}
