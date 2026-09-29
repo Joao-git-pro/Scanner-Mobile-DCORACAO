@@ -161,7 +161,7 @@
         <span class="text-2xl opacity-80">📦</span>
       </div>
       <div class="bg-surface border border-success/30 rounded-xl p-3 flex items-center justify-between shadow-lg">
-        <div><span class="text-[9px] font-mono text-success uppercase font-bold block mb-1">Bipados Hoje</span><span id="txtBipados" class="font-display text-3xl text-success leading-none">0</span></div>
+        <div><span id="lblBipados" class="text-[9px] font-mono text-success uppercase font-bold block mb-1">Bipados Hoje</span><span id="txtBipados" class="font-display text-3xl text-success leading-none">0</span></div>
         <span class="text-2xl opacity-80">✅</span>
       </div>
     </div>
@@ -407,6 +407,7 @@
     let servidorTemInicio = !(Date.now() - Number(localStorage.getItem(SEM_INICIO_KEY) || 0) < 30 * 60000);
     let assinaturaUsuarios = '';
     let timerAtualizacao = null;
+    let ultimaConfirmacaoEm = 0;         // hora do último bipe confirmado neste celular
 
     function salvarPinLocal() { localStorage.setItem('dc_user_pin', $('inputPin').value); }
     function sincronizarTudo() { atualizarDoServidor(false); }
@@ -426,6 +427,7 @@
     function atualizarRotuloPendentes() {
       const setor = setorExpedicaoAtual();
       $('lblPendentes').textContent = setor ? `Pendentes · ${setor.replace('Expedição ', 'EXP ')}` : 'Pendentes';
+      $('lblBipados').textContent = setor ? `Bipados hoje · ${setor.replace('Expedição ', 'EXP ')}` : 'Bipados hoje';
       $('qtdPendAba').textContent = $('txtPendentes').textContent !== '0' ? $('txtPendentes').textContent : '';
     }
 
@@ -498,6 +500,7 @@
       const req = ++dadosRequestId;
       const btn = $('btnAtualizarPend'); if (btn) btn.textContent = '⏳';
       const email = usuarioAtual.email || localStorage.getItem('dc_user_email') || '';
+      const pedidoEm = Date.now();
       fetch(`${API_URL}?action=scannerInicio&setor=${encodeURIComponent(setor)}&email=${encodeURIComponent(email)}`, { redirect: 'follow', cache: 'no-store' })
         .then(res => { if (!res.ok) throw new Error('HTTP ' + res.status); return res.json(); })   // HTML no lugar de JSON = servidor sem a ação nova
         .then(d => {
@@ -508,6 +511,9 @@
           if (!repetindo && (d.setor || '') !== setorExpedicaoAtual()) { atualizarDoServidor(true); return; }
           d.ts = Date.now();
           if (!$('barraConexao').className.includes('lento')) marcarConexao_('ok');
+          // Um bipe foi confirmado enquanto esta resposta vinha: ela pode não contar esse bipe.
+          // Não sobrescreve os números (que já somaram na hora) — pergunta de novo daqui a pouco.
+          if (pedidoEm < ultimaConfirmacaoEm || enviosAtivos > 0) { agendarAtualizacao_(4000); ocultarErroSync(); return; }
           aplicarEstado_(d);
           localStorage.removeItem(SEM_INICIO_KEY);
           salvarInicio_({ usuarios: d.usuarios, setor: d.setor || '', bipados: d.bipados, pendentes: d.pendentes, lista: d.lista, ts: d.ts });
@@ -535,11 +541,13 @@
     function carregarDadosAntigo_() {
       const setor = setorExpedicaoAtual();
       const requestId = ++dadosRequestId;
+      const pedidoEm = Date.now();
       const url = setor ? `${API_URL}?action=getDados&setor=${encodeURIComponent(setor)}` : `${API_URL}?action=getDados`;
       fetch(url, { redirect: 'follow', cache: 'no-store' })
         .then(res => { if (!res.ok) throw new Error(`HTTP ${res.status}`); return res.json(); })
         .then(data => {
           if (requestId !== dadosRequestId) return;
+          if (pedidoEm < ultimaConfirmacaoEm || enviosAtivos > 0) { agendarAtualizacao_(4000); return; }
           $('txtBipados').textContent = Number(data.bipados) || 0;
           $('txtPendentes').textContent = Number(data.pendentes) || 0;
           salvarInicio_({ setor, bipados: Number(data.bipados) || 0, pendentes: Number(data.pendentes) || 0, lista: null, ts: Date.now() });
@@ -563,6 +571,7 @@
       pendentesLista = pendentesLista.filter(item => !codigos.some(c => mesmoPacote_(item, c)));
     }
     function contarSeparado(data, dadosOriginais) {
+      ultimaConfirmacaoEm = Date.now();
       // Se os números ainda não chegaram do servidor ("…"), não inventa: a próxima atualização traz o certo
       const nBip = parseInt($('txtBipados').textContent, 10);
       if (!isNaN(nBip)) $('txtBipados').textContent = nBip + 1;
