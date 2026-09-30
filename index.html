@@ -892,8 +892,8 @@
       else if ((data.status || "").includes("erro")) {
         let tituloErro = "ATENÇÃO";
         if (msgTexto.includes("pin")) tituloErro = "PIN INCORRETO";
-        else if (msgTexto.includes("não imprimiu") || msgTexto.includes("bipe 1")) tituloErro = "FALTA BIPE 1";
         else if (msgTexto.includes("não encontrado") || msgTexto.includes("nao encontrado")) tituloErro = "NÃO ENCONTRADO";
+        else if (msgTexto.includes("não imprimiu") || msgTexto.includes("falta o bipe 1") || msgTexto.includes("bipe 1 ausente")) tituloErro = "FALTA BIPE 1";
         atualizarLeitura(reg, code, 'erro', tituloErro.toLowerCase() + (data.msg ? ' — ' + data.msg : ''), { msg: data.msg || '' });
         emitirSom('erro'); vibrar([300, 100, 300]);
         flashVisual('error', tituloErro, code + ' · ' + (data.msg || 'Ação necessária'));
